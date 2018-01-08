@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<%- include partials/metahead %>
+</head>
+
+<body class="breakpoint-1200 <%= setting.theme %>">
+  <%- include partials/header %>
+	<%- include partials/alert %>
+
+	<div id="container">
+		<%- include partials/sidebar %>
+
+		<div id="content">
+			<div class="container">
+				<%- include partials/breadcrumb %>
+
+				<!-- Page Header -->
+        <div class="page-header"></div>
+
+        <!-- Page Content -->
+        <div class="row">
+          <div class="col-md-12">
+						<div class="widget box">
+							<div class="widget-header">
+								<h4><%= title %></h4>
+							</div>
+              <div class="widget-content no-padding">
+                <table class="table table-striped table-bordered table-hover datatable" data-horizontal-width="100%">
+									<thead>
+										<tr>
+											<th>No</th>
+											<th>Agent Code</th>
+											<th>Agent Name</th>
+											<th>Address</th>
+											<th>Phone No</th>
+											<th>Actions</th>
+										</tr>
+									</thead>
+									<tbody>
+                    <% for (let i = 0; i < agent.length; i++) { %>
+                      <tr>
+  											<td><%= i + 1 %>.&nbsp;&nbsp;</td>
+												<td><%= agent[i].code %></td>
+  											<td><%= agent[i].name %></td>
+												<td><%= agent[i].address %></td>
+												<td><% if (agent[i].phone_no != '') { %> +62<%= agent[i].phone_no %> <% } %></td>
+  											<td align="center">
+                          <a href="/agent/edit/<%= agent[i].id %>" class="btn btn-xs btn-primary"><i class="icon-edit"></i></a>
+                          <a href="/agent/delete/<%= agent[i].id %>" class="btn btn-xs btn-danger confirm-dialog"><i class="icon-remove"></i></a>
+                        </td>
+  										</tr>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

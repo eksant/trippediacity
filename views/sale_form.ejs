@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<%- include partials/metahead %>
+</head>
+
+<body class="breakpoint-1200 <%= setting.theme %>">
+  <%- include partials/header %>
+	<%- include partials/alert %>
+
+	<div id="container">
+		<%- include partials/sidebar %>
+
+		<div id="content">
+			<div class="container">
+				<%- include partials/breadcrumb %>
+
+				<%
+					var form_action = 'add'
+	        if (sale) {
+	          form_action = `payment/${sale.id}`
+	        }
+
+					moment.updateLocale('id', null)
+	      %>
+
+				<!-- Page Header -->
+        <div class="page-header"></div>
+
+        <!-- Page Content -->
+        <div class="row">
+          <div class="col-md-12">
+            <div class="widget box">
+							<div class="widget-header">
+								<h4><%= action %> <%= title %></h4>
+							</div>
+              <div class="widget-content">
+                <form action="/sale/<%= form_action %>" method="post" class="form-horizontal" id="validate-form">
+
+									<div class="widget-content">
+										<div class="row">
+											<div class="col-md-6">
+												<div class="form-group">
+													<label class="col-md-4 control-label">Created By <span class="required">*</span></label>
+													<div class="col-md-8"><input type="text" name="name" <% if (sale) { %> value="<%= sale.User.name %>" <% } else { %> value="<%= userSession.name %>" <% } %> class="form-control required" disabled="disabled"></div>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-group">
+													<label class="col-md-4 control-label">Created Date <span class="required">*</span></label>
+													<div class="col-md-8">
+														<input type="hidden" name="createdAt" <% if (sale) { %> value="<%= moment(sale.createdAt).format('D-M-YYYY') %>" <% } else { %> value="<%= moment().format('D-M-YYYY') %>" <% } %> class="form-control">
+														<input type="text" name="disp_createdAt" <% if (sale) { %> value="<%= moment(sale.createdAt).format('D-M-YYYY') %>" <% } else { %> value="<%= moment().format('D-M-YYYY') %>" <% } %> class="form-control datepicker required" disabled="disabled">
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<!-- Purchase -->
+											<div class="col-md-12">
+												<div class="widget box">
+													<div class="widget-header">
+														<h4><i class="icon-shopping-cart"></i> Purchase</h4>
+													</div>
+													<div class="widget-content">
+														<div class="form-group">
+															<label class="col-md-2 control-label">No Invoice <span class="required">*</span></label>
+															<div class="col-md-4">
+																<select id="purchaseid" name="purchaseid" <% if (sale) { %> disabled <% } %> class="form-control required">
+																	<%
+																		if (sale) {
+																			var optSale
+																			if (sale.Purchase.category == 1) {
+																				optSale = `${sale.Purchase.no_invoice} - ${sale.Purchase.getCategory()} ${sale.Purchase.hotel_name} (${moment(sale.Purchase.hotel_startdate).format('D-M-YYYY')} - ${moment(sale.Purchase.hotel_enddate).format('D-M-YYYY')})`
+																			} else {
+																				optSale = `${sale.Purchase.no_invoice} - ${sale.Purchase.getCategory()} ${sale.Purchase.flightdeparture_airlinename} (${moment(sale.Purchase.flightdeparture_starttime).format('D-M-YYYY')})`
+																			}
+																	%>
+																	<option selected value="<%= sale.Purchase.id %>"><%= optSale %></option>
+																	<% } else { %>
+																	<option value=""></option>
+																	<%
+																		purchase.forEach(function(row) {
+																			var option
+																			if (row.category == 1) {
+																				option = `${row.no_invoice} - ${row.getCategory()} ${row.hotel_name} (${moment(row.hotel_startdate).format('D-M-YYYY')} - ${moment(row.hotel_enddate).format('D-M-YYYY')})`
+																			} else {
+																				option = `${row.no_invoice} - ${row.getCategory()} ${row.flightdeparture_airlinename} (${moment(row.flightdeparture_starttime).format('D-M-YYYY')})`
+																			}
+																	%>
+																	<option value="<%= row.id %>"><%= option %></option>
+																	<% }) %>
+																	<% } %>
+					                      </select>
+															</div>
+															<label class="col-md-2 control-label">Category</label>
+															<div class="col-md-4">
+																<input type="text" id="category" name="category" <% if (sale) { %> value="<%= sale.Purchase.getCategory() %>" <% } %> class="form-control" disabled>
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="col-md-2 control-label">Booking ID</label>
+															<div class="col-md-4">
+																<div class="input-group">
+																	<input type="text" id="booking_id" name="booking_id" <% if (sale) { %> value="<%= sale.Purchase.booking_id %>" <% } %> class="form-control" disabled>
+																	<span class="input-group-btn">
+																		<a href="#show_booking" id="btn_show_booking" data-toggle="modal" class="btn btn-default" type="button"><i class="icon-eye-open"></i> Detail</a>
+																	</span>
+																</div>
+															</div>
+															<label class="col-md-2 control-label">Total Purchase (IDR)</label>
+															<div class="col-md-4">
+																<input type="text" id="total_purchase" name="total_purchase" <% if (sale) { %> value="<%= sale.Purchase.total_purchase %>" <% } %> class="form-control" disabled>
+															</div>
+														</div>
+
+														<!-- Booking Detail -->
+														<div class="modal fade" id="show_booking">
+															<div class="modal-dialog">
+																<div class="modal-content">
+																	<div class="modal-header">
+																		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+																		<h4 class="modal-title">Purchase Detail</h4>
+																	</div>
+																	<div class="modal-body">
+
+																		<div class="row">
+																			<div class="col-md-6">
+																				<p class="col-md-5">Created By</p>
+																				<p id="create_by" class="col-md-7"></p>
+																			</div>
+																			<div class="col-md-6">
+																				<p class="col-md-6" align="right">Created Date</p>
+																				<p id="create_date" class="col-md-6" align="right"></p>
+																			</div>
+																		</div>
+
+																		<div class="row">
+																			<!-- Agent -->
+																			<div class="col-md-12">
+																				<div class="widget box">
+																					<div class="widget-header">
+																						<h4><i class="icon-building"></i> Agent</h4>
+																					</div>
+																					<div class="widget-content">
+																						<div class="row">
+																							<p class="col-md-3">Agent Name</p>
+																							<p id="agent_name" class="col-md-3"></p>
+																							<p class="col-md-3">No Invoice</p>
+																							<p id="no_invoice" class="col-md-3"></p>
+																							<p class="col-md-3">Rate</p>
+																							<p id="purchase" class="col-md-3"></p>
+																							<p class="col-md-3">Total Invoice</p>
+																							<p id="disp_total_purchase" class="col-md-3"></p>
+																						</div>
+																					</div>
+																				</div>
+																			</div>
+
+																			<!-- Booking Detail -->
+																			<div class="col-md-12">
+																				<div class="widget box">
+																					<div class="widget-header">
+																						<h4><i class="icon-shopping-cart"></i> Booking Detail</h4>
+																					</div>
+																					<div class="widget-content">
+																						<div class="tabbable box-tabs">
+																							<ul class="nav nav-tabs">
+																								<li><a id="tab_booking" href="#" data-toggle="tab"></a></li>
+																							</ul>
+																							<div class="tab-content" id="booking_detail">
+																								<div class="row">
+																									<p class="col-md-3">Booking ID</p>
+																									<p id="disp_booking_id" class="col-md-9"></p>
+																								</div>
+
+																								<!-- Hotels -->
+																								<div class="tab-pane" id="box_hotels">
+																									<div class="row">
+																										<p class="col-md-3">Start Date</p>
+																										<p id="hotel_startdate" class="col-md-9"></p>
+																										<p class="col-md-3">End Date</p>
+																										<p id="hotel_enddate" class="col-md-9"></p>
+																										<p class="col-md-3">Hotel Name</p>
+																										<p id="hotel_name" class="col-md-9"></p>
+																										<p class="col-md-3">Phone No.</p>
+																										<p id="hotel_phone" class="col-md-9"></p>
+																										<p class="col-md-3">Address</p>
+																										<p id="hotel_address" class="col-md-9"></p>
+																										<p class="col-md-3">Note</p>
+																										<p id="hotel_note" class="col-md-9"></p>
+																									</div>
+																								</div>
+
+																								<!-- Flights -->
+																								<div class="tab-pane" id="box_flights">
+																									<div class="row">
+																										<p class="col-md-3">Round Trip</p>
+																										<p id="flight_round_trip" class="col-md-9"></p>
+																										<p class="col-md-3">Origin</p>
+																										<p id="flightdeparture_airportfrom" class="col-md-3"></p>
+																										<p class="col-md-3">Destination</p>
+																										<p id="flightdeparture_airportto" class="col-md-3"></p>
+																									</div>
+																									<div class="space"></div>
+																									<div class="pane-title">
+																										<i class="icon-plane"></i> Departure
+																									</div>
+																									<div class="row">
+																										<p class="col-md-3">Airline Name</p>
+																										<p id="flightdeparture_airlinename" class="col-md-3"></p>
+																										<p class="col-md-3">Airline Booking ID</p>
+																										<p id="disp_flightdeparture_airlinebook" class="col-md-3"></p>
+																										<p class="col-md-3">Departure Date</p>
+																										<p id="flightdeparture_startdate" class="col-md-3"></p>
+																										<p class="col-md-1">Time</p>
+																										<p id="flightdeparture_starttime" class="col-md-2"></p>
+																										<p class="col-md-1">Until</p>
+																										<p id="flightdeparture_endtime" class="col-md-2"></p>
+																										<p class="col-md-3">Dep. Terminal</p>
+																										<p id="flightdeparture_terminal" class="col-md-9"></p>
+																										<p class="col-md-3">Departure Note</p>
+																										<p id="flightdeparture_note" class="col-md-9"></p>
+																									</div>
+
+																									<div id="flight_return" style="display:none;">
+																										<div class="space"></div>
+																										<div class="pane-title">
+																											<i class="icon-plane"></i> Return
+																										</div>
+																										<div class="row">
+																											<p class="col-md-3">Airline Name</p>
+																											<p id="flightreturn_airlinename" class="col-md-3"></p>
+																											<p class="col-md-3">Airline Booking ID</p>
+																											<p id="flightreturn_airlinebook" class="col-md-3"></p>
+																											<p class="col-md-3">Return Date</p>
+																											<p id="flightreturn_startdate" class="col-md-3"></p>
+																											<p class="col-md-1">Time</p>
+																											<p id="flightreturn_starttime" class="col-md-2"></p>
+																											<p class="col-md-1">Until</p>
+																											<p id="flightreturn_endtime" class="col-md-2"></p>
+																											<p class="col-md-3">Return Terminal</p>
+																											<p id="flightreturn_terminal" class="col-md-9"></p>
+																											<p class="col-md-3">Return Note</p>
+																											<p id="flightreturn_note" class="col-md-9"></p>
+																										</div>
+																									</div>
+																								</div>
+																								<!-- Trains -->
+																								<div class="tab-pane" id="box_trains">
+																									<div class="row">
+																										<p class="col-md-3">Round Trip</p>
+																										<p id="train_round_trip" class="col-md-9"></p>
+																										<p class="col-md-3">Origin</p>
+																										<p id="traindeparture_airportfrom" class="col-md-3"></p>
+																										<p class="col-md-3">Destination</p>
+																										<p id="traindeparture_airportto" class="col-md-3"></p>
+																									</div>
+																									<div class="space"></div>
+																									<div class="pane-title">
+																										<i class="icon-tag"></i> Departure
+																									</div>
+																									<div class="row">
+																										<p class="col-md-3">Train Name</p>
+																										<p id="traindeparture_airlinename" class="col-md-3"></p>
+																										<p class="col-md-3">Train Booking ID</p>
+																										<p id="disp_traindeparture_airlinebook" class="col-md-3"></p>
+																										<p class="col-md-3">Departure Date</p>
+																										<p id="traindeparture_startdate" class="col-md-3"></p>
+																										<p class="col-md-1">Time</p>
+																										<p id="traindeparture_starttime" class="col-md-2"></p>
+																										<p class="col-md-1">Until</p>
+																										<p id="traindeparture_endtime" class="col-md-2"></p>
+																										<p class="col-md-3">Departure Note</p>
+																										<p id="traindeparture_note" class="col-md-9"></p>
+																									</div>
+
+																									<div id="train_return" style="display:none;">
+																										<div class="space"></div>
+																										<div class="pane-title">
+																											<i class="icon-tags"></i> Return
+																										</div>
+																										<div class="row">
+																											<p class="col-md-3">Train Name</p>
+																											<p id="trainreturn_airlinename" class="col-md-3"></p>
+																											<p class="col-md-3">Train Booking ID</p>
+																											<p id="trainreturn_airlinebook" class="col-md-3"></p>
+																											<p class="col-md-3">Return Date</p>
+																											<p id="trainreturn_startdate" class="col-md-3"></p>
+																											<p class="col-md-1">Time</p>
+																											<p id="trainreturn_starttime" class="col-md-2"></p>
+																											<p class="col-md-1">Until</p>
+																											<p id="trainreturn_endtime" class="col-md-2"></p>
+																											<p class="col-md-3">Return Note</p>
+																											<p id="trainreturn_note" class="col-md-9"></p>
+																										</div>
+																									</div>
+																								</div>
+																							</div>
+																						</div>
+
+																					</div>
+																				</div>
+																			</div>
+
+																		</div>
+
+																	</div>
+																	<div class="modal-footer">
+																		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+																	</div>
+																</div>
+															</div>
+														</div>
+
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<!-- Customer -->
+											<div class="col-md-6">
+												<div class="widget box">
+													<div class="widget-header">
+														<h4><i class="icon-tag"></i> Sale</h4>
+													</div>
+													<div class="widget-content">
+														<div class="form-group">
+															<label class="col-md-3 control-label">Customer Name <span class="required">*</span></label>
+															<div class="col-md-9">
+																<select name="customerid" class="form-control required" <% if (sale) { %> disabled <% } %>>
+																	<% if (sale) { %>
+																	<option selected value="<%= sale.Customer.id %>"><%= sale.Customer.name %></option>
+																	<% } else { %>
+																	<option value=""></option>
+																	<% customer.forEach(function(row) { %>
+																	<option value="<%= row.id %>"><%= row.name %></option>
+																	<% }) %>
+																	<% } %>
+					                      </select>
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="col-md-3 control-label">No Invoice <span class="required">*</span></label>
+															<div class="col-md-9">
+																<input type="text" name="no_invoice" <% if (sale) { %> value="<%= sale.no_invoice %>" disabled <% } %> class="form-control required">
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="col-md-3 control-label">Price (IDR) <span class="required">*</span></label>
+															<div class="col-md-9">
+																<div class="input-group">
+																	<span class="input-group-addon">IDR</span>
+																	<input type="text" id="price" name="price" <% if (sale) { %> value="<%= sale.price %>" disabled <% } %> class="form-control required">
+																</div>
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="col-md-3 control-label">Total Invoice (IDR) <span class="required">*</span></label>
+															<div class="col-md-9">
+																<div class="input-group">
+																	<span class="input-group-addon">IDR</span>
+																	<input type="text" id="total_sale" name="total_sale" <% if (sale) { %> value="<%= sale.total_sale %>" disabled <% } %> class="form-control required">
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+
+											<!-- Payment -->
+											<div class="col-md-6">
+												<div class="widget box">
+													<div class="widget-header">
+														<h4><i class="icon-money"></i> Payment</h4>
+														<div class="toolbar no-padding">
+															<div class="btn-group">
+																<span class="btn btn-xs" id="paid_refresh">Refresh</span>
+																<span class="btn btn-xs dropdown-toggle" data-toggle="dropdown">Already Paid Now <i class="icon-angle-down"></i></span>
+																<ul class="dropdown-menu pull-right">
+																	<li><a href="#" id="paid_transfer"><i class="icon-money"></i> Transfer Debit</a></li>
+																	<li><a href="#" id="paid_credit"><i class="icon-money"></i> Credit Card</a></li>
+																	<li><a href="#" id="paid_cash"><i class="icon-money"></i> Money Cash</a></li>
+																</ul>
+															</div>
+														</div>
+													</div>
+													<div class="widget-content" id="content_payment">
+														<div class="form-group">
+															<label class="col-md-3 control-label">Payment Method</label>
+															<div class="col-md-9">
+																<select id="disp_payment_method" name="disp_payment_method" class="form-control">
+					                        <option value=""></option>
+																	<option <% if (sale.payment_method == 1) { %> selected <% } %> value="1">Transfer Debit</option>
+																	<option <% if (sale.payment_method == 2) { %> selected <% } %> value="2">Credit Card</option>
+																	<option <% if (sale.payment_method == 3) { %> selected <% } %> value="3">Money Cash</option>
+					                      </select>
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="col-md-3 control-label">Payment Date</label>
+															<div class="col-md-9">
+																<input type="text" id="disp_payment_date" name="disp_payment_date" <% if (sale) {  %> value="<% if (moment(sale.payment_date).format('D-M-YYYY') != 'Invalid date') { %> <%= moment(sale.payment_date).format('D-M-YYYY') %> <% } %>" <% } %> class="form-control datepicker">
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="col-md-3 control-label">Total Payment</label>
+															<div class="col-md-9">
+																<div class="input-group">
+																	<span class="input-group-addon">IDR</span>
+																	<input type="text" id="disp_total_payment" name="disp_total_payment" <% if (sale) { %> value="<%= sale.total_payment %>" <% } %> class="form-control">
+																</div>
+															</div>
+														</div>
+
+														<input type="hidden" id="payment_method" name="payment_method" value="<%= sale.payment_method %>">
+														<input type="hidden" id="payment_date" name="payment_date" value="<% if (moment(sale.payment_date).format('D-M-YYYY') != 'Invalid date') { %> <%= moment(sale.payment_date).format('D-M-YYYY') %> <% } %>">
+														<input type="hidden" id="total_payment" name="total_payment" value="<%= sale.total_payment %>">
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+                  <div class="form-actions">
+										<%
+											var labelNotification = ''
+											if (setting.mail_username != undefined || setting.mail_username != '') {
+												if (sale) {
+													labelNotification = 'The system will send invoices already paid automatically if checked.'
+												} else {
+													labelNotification = 'The system will send email notifications automatically if checked.'
+													if (setting.sms_apikey != undefined) {
+														labelNotification = 'The system will send email and sms notifications automatically if checked.'
+													}
+												}
+										%>
+											<span>
+												<div class="checker">
+													<span><input type="checkbox" name="notification" value="1" checked class="uniform"></span>
+												</div> <%= labelNotification %>
+											</span>
+										<% }%>
+                    <a href="/sale" class="btn btn-default pull-right"><i class="icon-repeat"></i> Cancel</a>
+										<% if (form_action == 'add' || sale.status < 3) { %>
+										<button type="submit" class="btn btn-success pull-right"><i class="icon-save"></i> Save</button>
+										<% } %>
+  								</div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+			</div>
+		</div>
+	</div>
+
+	<script>
+		const priceFormatOptions = { decimalPlaces: 0, digitGroupSeparator: ',', decimalCharacter: '.', modifyValueOnWheel: false };
+		const priceFormatOptionReadOnly = { decimalPlaces: 0, digitGroupSeparator: ',', decimalCharacter: '.', modifyValueOnWheel: false, readOnly: true, unformatOnSubmit: true };
+
+		new AutoNumeric('#price', priceFormatOptions);
+		new AutoNumeric('#total_sale', priceFormatOptions);
+		new AutoNumeric('#total_payment', priceFormatOptions);
+		new AutoNumeric('#total_purchase', priceFormatOptions);
+		new AutoNumeric('#disp_total_payment', priceFormatOptions);
+
+		var dateNow = $.datepicker.formatDate('dd-mm-yy', new Date());
+
+		function getMomentDate(str) {
+			if (str == '' || str == null) {
+				return ''
+			}
+			let dmy = str.split('-')
+			let res = dmy[2].trim().substring(0, 2) + '-' + dmy[1].trim() + '-' + dmy[0].trim()
+			return res.trim()
+		}
+
+		function getTime(str) {
+			if (str == '' || str == null) {
+				return ''
+			}
+			let dmy = str.trim().substring(str.indexOf('T')+1, str.indexOf('T')+6);
+			return dmy;
+		}
+
+		function formatCurrency(total) {
+	    var neg = false;
+			if (total == '' || total == null) {
+				return ''
+			}
+	    if (total < 0) {
+	    	neg = true;
+	      total = Math.abs(total);
+	    }
+			var res = (neg ? "-" : '') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
+	    return res.split('.')[0]
+		}
+
+		function disabledPaymentMethod(istrue) {
+			$('#disp_payment_method').prop('disabled', istrue);
+			$('#disp_payment_date').prop('disabled', istrue);
+			$('#disp_total_payment').prop('disabled', istrue);
+		}
+
+		function paidNow(paymentMethod) {
+			if ($('#total_sale').val() != '') {
+				$('#disp_payment_method').val(paymentMethod).trigger('change');
+				$('#disp_payment_date').val(dateNow).trigger('change');
+				$('#disp_total_payment').val($('#total_sale').val()).trigger('change');
+				disabledPaymentMethod(true);
+			} else {
+				alert('Please input total sale !!');
+			}
+		}
+
+		function activeTabBooking(tab){
+			$('.nav-tabs a[href="' + tab + '"]').tab('show');
+			$('.tab-pane').removeClass('active');
+			$(tab).addClass('active');
+		};
+
+		function disp(str) {
+			return ': ' + str;
+		}
+
+		$(function() {
+			$("#purchaseid").on("change keyup", function() {
+				var idx = $("#purchaseid").prop('selectedIndex') - 1;
+				var arrPurchase = <%- JSON.stringify(purchase) %>
+
+				if (arrPurchase.length > 0) {
+					for (let i = 0; i < arrPurchase.length; i++) {
+						if (i == idx) {
+							var category = '';
+							if (arrPurchase[i].category == 1) {
+								category = 'Hotels'
+							} else if (arrPurchase[i].category == 2) {
+								category = 'Flights'
+							} else if (arrPurchase[i].category == 3) {
+								category = 'Trains'
+							}
+
+							$('#btn_show_booking').removeAttr('disabled');
+
+							$("#category").val(category);
+							$("#booking_id").val(arrPurchase[i].booking_id);
+							$("#total_purchase").val(formatCurrency(arrPurchase[i].total_purchase));
+
+							$('#create_by').text(disp(arrPurchase[i].User.name));
+							$('#create_date').text(disp(getMomentDate(arrPurchase[i].createdAt)));
+							$('#agent_name').text(disp(arrPurchase[i].Agent.name));
+							$('#no_invoice').text(disp(arrPurchase[i].no_invoice));
+							$('#purchase').text(disp(formatCurrency(arrPurchase[i].purchase)));
+							$('#disp_total_purchase').text(disp(formatCurrency(arrPurchase[i].total_purchase)));
+
+							var tab_link = '#box_' + category.toLowerCase();
+							var tab_name = category;
+							$('#tab_booking').attr('href', tab_link);
+							$('#tab_booking').text(tab_name);
+							activeTabBooking(tab_link);
+							$('#disp_booking_id').text(disp(arrPurchase[i].booking_id));
+
+							// detail hotel
+							$('#hotel_startdate').text(disp(getMomentDate(arrPurchase[i].hotel_startdate)));
+							$('#hotel_enddate').text(disp(getMomentDate(arrPurchase[i].hotel_enddate)));
+							$('#hotel_name').text(disp(arrPurchase[i].hotel_name));
+							$('#hotel_phone').text((arrPurchase[i].hotel_phone != '') ? disp('+62' + arrPurchase[i].hotel_phone) : '');
+							$('#hotel_address').text(disp(arrPurchase[i].hotel_address));
+							$('#hotel_note').text(disp(arrPurchase[i].hotel_note));
+
+							// detail flight
+							$('#flightdeparture_airlinename').text(disp(arrPurchase[i].flightdeparture_airlinename));
+							$('#disp_flightdeparture_airlinebook').text(disp(arrPurchase[i].flightdeparture_airlinebook));
+							$('#flightdeparture_airportfrom').text(disp(arrPurchase[i].flightdeparture_airportfrom));
+							$('#flightdeparture_airportto').text(disp(arrPurchase[i].flightdeparture_airportto));
+							$('#flight_round_trip').text((arrPurchase[i].flightreturn_airlinename == '') ? disp('No') : disp('Yes'));
+							$('#flightdeparture_startdate').text(disp(getMomentDate(arrPurchase[i].flightdeparture_startdate)));
+							$('#flightdeparture_starttime').text(disp(getTime(arrPurchase[i].flightdeparture_startdate)));
+							$('#flightdeparture_endtime').text(disp(getTime(arrPurchase[i].flightdeparture_enddate)));
+							$('#flightdeparture_terminal').text(disp(arrPurchase[i].flightdeparture_terminal));
+							$('#flightdeparture_note').text(disp(arrPurchase[i].flightdeparture_note));
+							if (arrPurchase[i].flightreturn_airlinename != '') {
+								$('#flight_return').show();
+								$('#flightreturn_airlinename').text(disp(arrPurchase[i].flightreturn_airlinename));
+								$('#flightreturn_airlinebook').text(disp(arrPurchase[i].flightreturn_airlinebook));
+								$('#flightreturn_startdate').text(disp(getMomentDate(arrPurchase[i].flightreturn_startdate)));
+								$('#flightreturn_starttime').text(disp(getTime(arrPurchase[i].flightreturn_startdate)));
+								$('#flightreturn_endtime').text(disp(getTime(arrPurchase[i].flightreturn_enddate)));
+								$('#flightreturn_terminal').text(disp(arrPurchase[i].flightreturn_terminal));
+								$('#flightreturn_note').text(disp(arrPurchase[i].flightreturn_note));
+							}
+
+							// detail train
+							$('#traindeparture_airlinename').text(disp(arrPurchase[i].flightdeparture_airlinename));
+							$('#disp_traindeparture_airlinebook').text(disp(arrPurchase[i].flightdeparture_airlinebook));
+							$('#traindeparture_airportfrom').text(disp(arrPurchase[i].flightdeparture_airportfrom));
+							$('#traindeparture_airportto').text(disp(arrPurchase[i].flightdeparture_airportto));
+							$('#train_round_trip').text((arrPurchase[i].flightreturn_airlinename == '') ? disp('No') : disp('Yes'));
+							$('#traindeparture_startdate').text(disp(getMomentDate(arrPurchase[i].flightdeparture_startdate)));
+							$('#traindeparture_starttime').text(disp(getTime(arrPurchase[i].flightdeparture_startdate)));
+							$('#traindeparture_endtime').text(disp(getTime(arrPurchase[i].flightdeparture_enddate)));
+							$('#traindeparture_note').text(disp(arrPurchase[i].flightdeparture_note));
+							if (arrPurchase[i].flightreturn_airlinename != '') {
+								$('#train_return').show();
+								$('#trainreturn_airlinename').text(disp(arrPurchase[i].flightreturn_airlinename));
+								$('#trainreturn_airlinebook').text(disp(arrPurchase[i].flightreturn_airlinebook));
+								$('#trainreturn_startdate').text(disp(getMomentDate(arrPurchase[i].flightreturn_startdate)));
+								$('#trainreturn_starttime').text(disp(getTime(arrPurchase[i].flightreturn_startdate)));
+								$('#trainreturn_endtime').text(disp(getTime(arrPurchase[i].flightreturn_enddate)));
+								$('#trainreturn_note').text(disp(arrPurchase[i].flightreturn_note));
+							}
+						}
+					}
+				}
+			})
+		})
+
+		$('#btn_show_booking').attr('disabled', 'disabled');
+
+		$('#payment_date').val('');
+		$('#content_payment input[type="text"]').val('');
+
+		// clear all input in payment method
+		$('#paid_refresh').on('click', function (e) {
+			disabledPaymentMethod(false);
+			$('#disp_payment_method').val('').trigger('change');
+			$('#content_payment input[type="text"]').val('');
+		});
+
+		$('#disp_payment_method').on('change keyup keydown', function() {
+			$('#payment_method').val($('#disp_payment_method').val());
+		});
+
+		$('#disp_payment_date').on('change keyup keydown', function() {
+			$('#payment_date').val($('#disp_payment_date').val());
+		});
+
+		$('#disp_total_payment').on('change keyup keydown', function() {
+			$('#total_payment').val($('#disp_total_payment').val());
+		});
+
+		$('#paid_transfer').click(function() {
+			paidNow('1');
+		});
+
+		$('#paid_credit').click(function() {
+			paidNow('2');
+		});
+
+		$('#paid_cash').click(function() {
+			paidNow('3');
+		});
+	</script>
+
+</body>
+</html>

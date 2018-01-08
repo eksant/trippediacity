@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<%- include partials/metahead %>
+</head>
+
+<body class="breakpoint-1200 <%= setting.theme %>">
+  <%- include partials/header %>
+	<%- include partials/alert %>
+
+	<div id="container">
+		<%- include partials/sidebar %>
+
+		<div id="content">
+			<div class="container">
+				<%- include partials/breadcrumb %>
+
+				<!-- Page Header -->
+        <div class="page-header"></div>
+
+        <!-- Page Content -->
+        <div class="row">
+          <div class="col-md-12">
+            <div class="widget box">
+							<div class="widget-header">
+								<h4><%= action %> <%= title %></h4>
+							</div>
+              <div class="widget-content">
+                <form action="/setting" method="post" class="form-horizontal" id="validate-form" novalidate="novalidate">
+									<div class="tabbable tabbable-custom tabs-left">
+										<ul class="nav nav-tabs tabs-left">
+											<li class="active"><a href="#tab_app" data-toggle="tab">Application</a></li>
+											<li><a href="#tab_transaction" data-toggle="tab">Transaction</a></li>
+											<li ><a href="#tab_sms" data-toggle="tab">SMS Notification</a></li>
+											<li><a href="#tab_email" data-toggle="tab">Email Sender</a></li>
+										</ul>
+										<div class="tab-content">
+
+											<div class="tab-pane active" id="tab_app">
+												<div class="widget-content">
+													<div class="form-group">
+														<label class="col-md-2 control-label">Application Name <span class="required">*</span></label>
+														<div class="col-md-10">
+															<input type="text" name="app_name" value="<%= setting.app_name %>" class="form-control required">
+														</div>
+													</div>
+													<div class="form-group">
+														<label class="col-md-2 control-label">Copyright</label>
+														<div class="col-md-10">
+															<input type="text" name="app_copyright" value="<%= setting.app_copyright %>" class="form-control">
+														</div>
+													</div>
+													<hr>
+													<div class="form-group">
+														<label class="col-md-2 control-label">Theme</label>
+														<div class="col-md-10">
+															<select id="theme" name="theme" class="form-control">
+																<option <% if (setting.theme == '') { %> selected <% } %> value="">Theme White</option>
+																<option <% if (setting.theme == 'theme-dark') { %> selected <% } %> value="theme-dark">Theme Dark</option>
+																<option <% if (setting.theme == 'theme-orange') { %> selected <% } %> value="theme-orange">Theme Orange</option>
+															</select>
+														</div>
+													</div>
+												</div>
+											</div>
+
+											<div class="tab-pane" id="tab_transaction">
+												<div class="widget-content">
+													<div class="row">
+														<div class="col-md-6">
+															<div class="form-group">
+																<label class="col-md-4 control-label">Investment Default (IDR) <span class="required">*</span></label>
+																<div class="col-md-8">
+																	<input type="text" id="investment_value" name="investment_value" value="<%= setting.investment_value %>" class="form-control required">
+																</div>
+															</div>
+															<div class="form-group">
+																<label class="col-md-4 control-label">Sales Tax</label>
+																<div class="col-md-8">
+																	<div class="input-group">
+																		<input type="number" id="sales_tax" name="sales_tax" value="<%= setting.sales_tax %>" class="form-control" min="0" max="100">
+																		<span class="input-group-addon">Percent (%)</span>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="col-md-6">
+															<div class="form-group">
+																<label class="col-md-4 control-label">Admin Fee <span class="required">*</span></label>
+																<div class="col-md-8">
+																	<div class="input-group">
+																		<input type="number" id="admin_fee" name="admin_fee" value="<%= setting.admin_fee %>" class="form-control required" min="0" max="100">
+																		<span class="input-group-addon">Percent (%)</span>
+																	</div>
+																</div>
+															</div>
+															<div class="form-group">
+																<label class="col-md-4 control-label">Operating Costs <span class="required">*</span></label>
+																<div class="col-md-8">
+																	<div class="input-group">
+																		<input type="number" id="operating_costs" name="operating_costs" value="<%= setting.operating_costs %>" class="form-control required" min="0" max="100">
+																		<span class="input-group-addon">Percent (%)</span>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+
+											<div class="tab-pane" id="tab_sms">
+												<div class="widget-content">
+													<div class="form-group">
+														<label class="col-md-2 control-label">API Key</label>
+														<div class="col-md-10">
+															<input type="text" name="sms_apikey" value="<%= setting.sms_apikey %>" class="form-control">
+														</div>
+													</div>
+													<div class="form-group">
+														<label class="col-md-2 control-label">Key Secret</label>
+														<div class="col-md-10">
+															<input type="text" name="sms_apisecret" value="<%= setting.sms_apisecret %>" class="form-control">
+														</div>
+													</div>
+												</div>
+											</div>
+
+											<div class="tab-pane" id="tab_email">
+												<div class="widget-content">
+													<div class="form-group">
+														<label class="col-md-2 control-label">SMTP Host <span class="required">*</span></label>
+														<div class="col-md-10">
+															<input type="text" name="mail_host" value="<%= setting.mail_host %>" class="form-control required">
+														</div>
+													</div>
+													<div class="form-group">
+														<label class="col-md-2 control-label">SMTP Port <span class="required">*</span></label>
+														<div class="col-md-10">
+															<input type="number" name="mail_port" value="<%= setting.mail_port %>" class="form-control required required" maxlength="3">
+														</div>
+													</div>
+													<div class="form-group">
+														<label class="col-md-2 control-label">Secure</label>
+														<div class="col-md-10">
+															<label class="radio-inline"><input type="radio" class="uniform" name="mail_secure" checked value="1">Yes</label>
+															<label class="radio-inline"><input type="radio" class="uniform" name="mail_secure" <% if (setting.mail_secure == 2) { %> checked <% } %> value="2">No</label>
+														</div>
+													</div>
+													<div class="form-group">
+														<label class="col-md-2 control-label">Username <span class="required">*</span></label>
+														<div class="col-md-10">
+															<input type="text" name="mail_username" value="<%= setting.mail_username %>" class="form-control required">
+														</div>
+													</div>
+													<div class="form-group">
+														<label class="col-md-2 control-label">Password <span class="required">*</span></label>
+														<div class="col-md-10">
+															<input type="password" name="mail_password" value="<%= setting.mail_password %>" class="form-control required">
+														</div>
+													</div>
+												</div>
+											</div>
+
+										</div>
+									</div>
+
+                  <div class="form-actions">
+                    <button type="submit" class="btn btn-success pull-right"><i class="icon-save"></i> Save</button>
+  								</div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+			</div>
+		</div>
+	</div>
+
+	<script>
+		const priceFormatOptions = { decimalPlaces: 0, digitGroupSeparator: ',', decimalCharacter: '.', modifyValueOnWheel: false };
+		const priceFormatOptionReadOnly = { decimalPlaces: 0, digitGroupSeparator: ',', decimalCharacter: '.', modifyValueOnWheel: false, readOnly: true, unformatOnSubmit: true };
+
+		new AutoNumeric('#fee_sale', priceFormatOptions);
+		new AutoNumeric('#investment_value', priceFormatOptions);
+	</script>
+
+</body>
+</html>

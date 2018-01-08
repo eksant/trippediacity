@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<%- include partials/metahead %>
+</head>
+
+<body class="breakpoint-1200 <%= setting.theme %>">
+  <%- include partials/header %>
+	<%- include partials/alert %>
+
+	<div id="container">
+		<%- include partials/sidebar %>
+
+		<div id="content">
+			<div class="container">
+				<%- include partials/breadcrumb %>
+
+				<!-- Page Header -->
+        <div class="page-header"></div>
+
+        <!-- Page Content -->
+        <div class="row">
+          <div class="col-md-12">
+						<div class="widget box">
+							<div class="widget-header">
+								<h4><%= title %></h4>
+							</div>
+              <div class="widget-content no-padding">
+                <table class="table table-striped table-bordered table-hover table-exports datatable" data-horizontal-width="100%">
+									<thead>
+										<tr>
+											<th>No</th>
+											<th>Create Date</th>
+											<th>Ref. Code</th>
+											<th>Description</th>
+											<th>Amount (IDR)</th>
+											<th>Deduct Profit (IDR)</th>
+											<th>Saldo (IDR)</th>
+											<th>Created By</th>
+										</tr>
+									</thead>
+									<tbody>
+                    <%
+											moment.updateLocale('id', null)
+                      for (let i = 0; i < cashflow.length; i++) {
+                    %>
+                      <tr>
+  											<td><%= i + 1 %>.&nbsp;&nbsp;</td>
+  											<td><%= moment(cashflow[i].createdAt).format('D-M-YYYY') %></td>
+												<td><%= cashflow[i].no_transaction %></td>
+  											<td><%= cashflow[i].description %></td>
+												<td align="right"><%= formatMoney(cashflow[i].value) %></td>
+												<td align="right"><%= formatMoney(cashflow[i].deduct_profit) %></td>
+												<td align="right"><%= formatMoney(cashflow[i].saldo) %></td>
+												<td><%= cashflow[i].User.name %></td>
+  										</tr>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

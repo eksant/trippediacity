@@ -1,0 +1,16 @@
+<% if (alert != null) { %>
+  <div id="flash_alert">
+    <div class="message alert-<%= alert.type %> fade in">
+      <i class="icon-remove close" data-dismiss="alert"></i>
+      <%= alert.msg %>
+    </div>
+  </div>
+
+  <% if (alert.type != 'danger') { %>
+    <script>
+      $(function() {
+        $('#flash_alert').delay(3000).fadeOut(1000);
+      });
+    </script>
+  <% } %>
+<% } %>

@@ -1,0 +1,31 @@
+<!-- Breadcrumbs line -->
+<div class="crumbs">
+  <ul id="breadcrumbs" class="breadcrumb">
+    <li>
+      <i class="icon-home"></i>
+      <a href="/">Dashboard</a>
+    </li>
+    <% if (title !== 'Dashboard') { %>
+      <li <% if (action == '') { %> class="current" <% } %>>
+        <a href="/<%= title.toLowerCase() %>" title="<%= title %>"><%= title %></a>
+      </li>
+    <% } %>
+    <% if (action !== '') { %>
+      <li class="current">
+        <a href="/<%= title.toLowerCase() %>/<%= action.toLowerCase() %>" title="<%= action %>"><%= action %> <%= title %></a>
+      </li>
+    <% } %>
+  </ul>
+
+  <% if (new_button) { %>
+    <ul class="crumb-buttons">
+      <li class="range">
+        <a href="/<%= title.toLowerCase() %>/add"><i class="icon-file-alt"></i> New</a>
+      </li>
+      <li class="range">
+        <a href="/<%= title.toLowerCase() %>"><i class="icon-refresh"></i> Refresh</a>
+      </li>
+    </ul>
+  <% } %>
+</div>
+<!-- /Breadcrumbs line -->

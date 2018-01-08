@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<%- include partials/metahead %>
+</head>
+
+<body class="breakpoint-1200 <%= setting.theme %>">
+  <%- include partials/header %>
+	<%- include partials/alert %>
+
+	<div id="container">
+		<%- include partials/sidebar %>
+
+		<div id="content">
+			<div class="container">
+				<%- include partials/breadcrumb %>
+
+				<%
+					var form_action = 'add'
+	        if (purchase) {
+	          form_action = `edit/${purchase.id}`
+	        }
+
+					moment.updateLocale('id', null)
+	      %>
+
+				<!-- Page Header -->
+        <div class="page-header"></div>
+
+        <!-- Page Content -->
+        <div class="row">
+          <div class="col-md-12">
+            <div class="widget box">
+							<div class="widget-header">
+								<h4><%= action %> <%= title %></h4>
+							</div>
+              <div class="widget-content">
+                <form action="/purchase/<%= form_action %>" method="post" class="form-horizontal" id="validate-form">
+
+									<div class="widget-content">
+										<div class="row">
+											<div class="col-md-6">
+												<div class="form-group">
+													<label class="col-md-4 control-label">Created By <span class="required">*</span></label>
+													<div class="col-md-8"><input type="text" name="name" value="<%= userSession.name %>" class="form-control required" disabled="disabled"></div>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-group">
+													<label class="col-md-4 control-label">Created Date <span class="required">*</span></label>
+													<div class="col-md-8">
+														<input type="hidden" name="createdAt" value="<%= moment(purchase.createdAt).format('D-M-YYYY') %>" class="form-control">
+														<input type="text" name="disp_createdAt" value="<%= moment(purchase.createdAt).format('D-M-YYYY') %>" class="form-control datepicker required" disabled="disabled">
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<!-- Agent -->
+											<div class="col-md-12">
+												<div class="widget box">
+													<div class="widget-header">
+														<h4><i class="icon-building"></i> Agent</h4>
+													</div>
+													<div class="widget-content">
+														<div class="form-group">
+															<label class="col-md-2 control-label">Agent Name <span class="required">*</span></label>
+															<div class="col-md-4">
+																<select name="agentid" class="form-control required">
+																	<option value=""></option>
+																	<% agent.forEach(function(row) { %>
+																	<option <% if (purchase.AgentId == row.id) { %> selected <% } %> value="<%= row.id %>"><%= row.name %></option>
+																	<% }) %>
+					                      </select>
+															</div>
+															<label class="col-md-2 control-label">No Invoice <span class="required">*</span></label>
+															<div class="col-md-4">
+																<input type="text" name="no_invoice" value="<%= purchase.no_invoice %>" class="form-control required">
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="col-md-2 control-label">Rate <span class="required">*</span></label>
+															<div class="col-md-4">
+																<div class="input-group">
+																	<span class="input-group-addon">IDR</span>
+																	<input type="text" id="purchase" name="purchase" value="<%= purchase.purchase %>" class="form-control required">
+																</div>
+															</div>
+															<label class="col-md-2 control-label">Total Invoice <span class="required">*</span></label>
+															<div class="col-md-4">
+																<div class="input-group">
+																	<span class="input-group-addon">IDR</span>
+																	<input type="text" id="total_purchase" name="total_purchase" value="<%= purchase.total_purchase %>" class="form-control required">
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+
+											<!-- Booking -->
+											<div class="col-md-6">
+												<div class="widget box">
+													<div class="widget-header">
+														<h4><i class="icon-shopping-cart"></i> Booking Detail</h4>
+													</div>
+													<div class="widget-content">
+														<div class="tabbable box-tabs">
+															<ul class="nav nav-tabs">
+																<%
+																	var tab_link = ''
+																	var tab_name = ''
+																	if (purchase) {
+																		if (purchase.category == 1) {
+																			tab_link = 'box_hotels'
+																			tab_name = 'Hotels'
+																		} else if (purchase.category == 2) {
+																			tab_link = 'box_flights'
+																			tab_name = 'Flights'
+																		} else if (purchase.category == 3) {
+																			tab_link = 'box_trains'
+																			tab_name = 'Trains'
+																		}
+																%>
+																	<li><a href="#<%= tab_link %>" data-toggle="tab"><%= tab_name %></a></li>
+																<% } else { %>
+																	<li><a href="#box_trains" data-toggle="tab">Trains</a></li>
+																	<li><a href="#box_flights" data-toggle="tab">Flights</a></li>
+																	<li><a href="#box_hotels" data-toggle="tab">Hotels</a></li>
+																<% } %>
+															</ul>
+															<div class="tab-content" id="booking_detail">
+																<div class="form-group">
+																	<label class="col-md-3 control-label">Booking ID <span class="required">*</span></label>
+																	<div class="col-md-9">
+																		<input type="text" name="booking_id" value="<%= purchase.booking_id %>" class="form-control required">
+																	</div>
+																</div>
+
+																<!-- Hotels -->
+																<div class="tab-pane" id="box_hotels">
+																	<div class="form-group">
+																		<label class="col-md-3 control-label">Start Date <span class="required">*</span></label>
+																		<div class="col-md-3">
+																			<input type="text" id="hotel_startdate" name="hotel_startdate" value="<% if (moment(purchase.hotel_startdate).format('D-M-YYYY') != 'Invalid date') { %> <%= moment(purchase.hotel_startdate).format('D-M-YYYY') %> <% } %>" class="form-control datepicker required">
+																		</div>
+																		<label class="col-md-3 control-label">End Date <span class="required">*</span></label>
+																		<div class="col-md-3">
+																			<input type="text" id="hotel_enddate" name="hotel_enddate" value="<% if (moment(purchase.hotel_enddate).format('D-M-YYYY') != 'Invalid date') { %> <%= moment(purchase.hotel_enddate).format('D-M-YYYY') %> <% } %>" class="form-control datepicker required">
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label class="col-md-3 control-label">Hotel Name <span class="required">*</span></label>
+																		<div class="col-md-9">
+																			<input type="text" name="hotel_name" value="<%= purchase.hotel_name %>" class="form-control required">
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label class="col-md-3 control-label">Phone No. <span class="required">*</span></label>
+																		<div class="col-md-9">
+																			<div class="input-group">
+																				<span class="input-group-addon">+62</span>
+																				<input type="number" name="hotel_phone" value="<%= purchase.hotel_phone %>" class="form-control required">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label class="col-md-3 control-label">Address <span class="required">*</span></label>
+																		<div class="col-md-9">
+																			<textarea rows="3" cols="5" id="hotel_address" name="hotel_address" class="auto form-control required"><%= purchase.hotel_address %></textarea>
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label class="col-md-3 control-label">Note</label>
+																		<div class="col-md-9">
+																			<textarea rows="3" cols="5" id="hotel_note" name="hotel_note" class="auto form-control"><%= purchase.hotel_note %></textarea>
+																		</div>
+																	</div>
+																</div>
+																<!-- Flights -->
+																<div class="tab-pane" id="box_flights">
+																	<div class="form-group">
+																		<label class="col-md-3 control-label">Round Trip <span class="required">*</span></label>
+																		<div class="col-md-9">
+																			<select id="flight_round_trip" name="flight_round_trip" class="form-control">
+																				<option value="1">No</option>
+																				<option value="2">Yes</option>
+								                      </select>
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label class="col-md-3 control-label">Origin <span class="required">*</span></label>
+																		<div class="col-md-9">
+																			<input type="text" id="disp_flightdeparture_airportfrom" name="disp_flightdeparture_airportfrom" value="<%= purchase.flightdeparture_airportfrom %>" class="form-control required">
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label class="col-md-3 control-label">Destination <span class="required">*</span></label>
+																		<div class="col-md-9">
+																			<input type="text" id="disp_flightdeparture_airportto" name="disp_flightdeparture_airportto" value="<%= purchase.flightdeparture_airportto %>" class="form-control required">
+																		</div>
+																	</div>
+
+																	<hr />
+																	<div class="form-group">
+																		<label class="col-md-3 control-label">Airline Name <span class="required">*</span></label>
+																		<div class="col-md-9">
+																			<input type="text" id="disp_flightdeparture_airlinename" name="disp_flightdeparture_airlinename" value="<%= purchase.flightdeparture_airlinename %>" class="form-control required">
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label class="col-md-3 control-label">Airline Booking ID <span class="required">*</span></label>
+																		<div class="col-md-9">
+																			<input type="text" id="disp_flightdeparture_airlinebook" name="disp_flightdeparture_airlinebook" value="<%= purchase.flightdeparture_airlinebook %>" class="form-control required">
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label class="col-md-3 control-label">Departure Date <span class="required">*</span></label>
+																		<div class="col-md-3">
+																			<input type="text" id="disp_flightdeparture_startdate" name="disp_flightdeparture_startdate" value="<% if (moment(purchase.flightdeparture_startdate).format('D-M-YYYY') != 'Invalid date') { %> <%= moment(purchase.flightdeparture_startdate).format('D-M-YYYY') %> <% } %>" class="form-control datepicker required">
+																		</div>
+																		<label class="col-md-1 control-label">Time</label>
+																		<div class="col-md-2">
+																			<input type="text" class="form-control" id="disp_flightdeparture_starttime" name="disp_flightdeparture_starttime" value="">
+																		</div>
+																		<label class="col-md-1 control-label">Until</label>
+																		<div class="col-md-2">
+																			<input type="text" class="form-control" id="disp_flightdeparture_endtime" name="disp_flightdeparture_endtime" value="">
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label class="col-md-3 control-label">Departure Terminal <span class="required">*</span></label>
+																		<div class="col-md-9">
+																			<input type="text" id="disp_flightdeparture_terminal" name="disp_flightdeparture_terminal" value="<%= purchase.flightdeparture_terminal %>" class="form-control required">
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label class="col-md-3 control-label">Departure Note</label>
+																		<div class="col-md-9">
+																			<textarea rows="2" cols="5" id="disp_flightdeparture_note" name="disp_flightdeparture_note" class="auto form-control"><%= purchase.flightdeparture_note %></textarea>
+																		</div>
+																	</div>
+																	<div id="flight_return" style="display:none;">
+																		<hr />
+																		<div class="form-group">
+																			<label class="col-md-3 control-label">Airline Name <span class="required">*</span></label>
+																			<div class="col-md-9">
+																				<input type="text" id="disp_flightreturn_airlinename" name="disp_flightreturn_airlinename" value="<%= purchase.flightreturn_airlinename %>" class="form-control required">
+																			</div>
+																		</div>
+																		<div class="form-group">
+																			<label class="col-md-3 control-label">Airline Booking ID <span class="required">*</span></label>
+																			<div class="col-md-9">
+																				<input type="text" id="disp_flightreturn_airlinebook" name="disp_flightreturn_airlinebook" value="<%= purchase.flightreturn_airlinebook %>" class="form-control required">
+																			</div>
+																		</div>
+																		<div class="form-group">
+																			<label class="col-md-3 control-label">Return Date <span class="required">*</span></label>
+																			<div class="col-md-3">
+																				<input type="text" id="disp_flightreturn_startdate" name="disp_flightreturn_startdate" value="<% if (moment(purchase.flightreturn_startdate).format('D-M-YYYY') != 'Invalid date') { %> <%= moment(purchase.flightreturn_startdate).format('D-M-YYYY') %> <% } %>" class="form-control datepicker required">
+																			</div>
+																			<label class="col-md-1 control-label">Time</label>
+																			<div class="col-md-2">
+																				<input type="text" class="form-control" id="disp_flightreturn_starttime" name="disp_flightreturn_starttime" value="">
+																			</div>
+																			<label class="col-md-1 control-label">Until</label>
+																			<div class="col-md-2">
+																				<input type="text" class="form-control" id="disp_flightreturn_endtime" name="disp_flightreturn_endtime" value="">
+																			</div>
+																		</div>
+																		<div class="form-group">
+																			<label class="col-md-3 control-label">Return Terminal <span class="required">*</span></label>
+																			<div class="col-md-9">
+																				<input type="text" id="disp_flightreturn_terminal" name="disp_flightreturn_terminal" value="<%= purchase.flightreturn_terminal %>" class="form-control required">
+																			</div>
+																		</div>
+																		<div class="form-group">
+																			<label class="col-md-3 control-label">Return Note</label>
+																			<div class="col-md-9">
+																				<textarea rows="2" cols="5" id="disp_flightreturn_note" name="disp_flightreturn_note" class="auto form-control"><%= purchase.flightreturn_note %></textarea>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+																<!-- Trains -->
+																<div class="tab-pane" id="box_trains">
+																	<div class="form-group">
+																		<label class="col-md-3 control-label">Round Trip <span class="required">*</span></label>
+																		<div class="col-md-9">
+																			<select id="train_round_trip" name="train_round_trip" class="form-control">
+																				<option value="1">No</option>
+																				<option value="2">Yes</option>
+								                      </select>
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label class="col-md-3 control-label">Origin <span class="required">*</span></label>
+																		<div class="col-md-9">
+																			<input type="text" id="disp_traindeparture_airportfrom" name="disp_traindeparture_airportfrom" value="<%= purchase.flightdeparture_airportfrom %>" class="form-control required">
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label class="col-md-3 control-label">Destination <span class="required">*</span></label>
+																		<div class="col-md-9">
+																			<input type="text" id="disp_traindeparture_airportto" name="disp_traindeparture_airportto" value="<%= purchase.flightdeparture_airportto %>" class="form-control required">
+																		</div>
+																	</div>
+
+																	<hr />
+																	<div class="form-group">
+																		<label class="col-md-3 control-label">Train Name <span class="required">*</span></label>
+																		<div class="col-md-9">
+																			<input type="text" id="disp_traindeparture_airlinename" name="disp_traindeparture_airlinename" value="<%= purchase.flightdeparture_airlinename %>" class="form-control required">
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label class="col-md-3 control-label">Train Booking ID <span class="required">*</span></label>
+																		<div class="col-md-9">
+																			<input type="text" id="disp_traindeparture_airlinebook" name="disp_traindeparture_airlinebook" value="<%= purchase.flightdeparture_airlinebook %>" class="form-control required">
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label class="col-md-3 control-label">Departure Date <span class="required">*</span></label>
+																		<div class="col-md-3">
+																			<input type="text" id="disp_traindeparture_startdate" name="disp_traindeparture_startdate" value="<% if (moment(purchase.flightdeparture_startdate).format('D-M-YYYY') != 'Invalid date') { %> <%= moment(purchase.flightdeparture_startdate).format('D-M-YYYY') %> <% } %>" class="form-control datepicker required">
+																		</div>
+																		<label class="col-md-1 control-label">Time</label>
+																		<div class="col-md-2">
+																			<input type="text" class="form-control" id="disp_traindeparture_starttime" name="disp_traindeparture_starttime" value="">
+																		</div>
+																		<label class="col-md-1 control-label">Until</label>
+																		<div class="col-md-2">
+																			<input type="text" class="form-control" id="disp_traindeparture_endtime" name="disp_traindeparture_endtime" value="">
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label class="col-md-3 control-label">Departure Note</label>
+																		<div class="col-md-9">
+																			<textarea rows="2" cols="5" id="disp_traindeparture_note" name="disp_traindeparture_note" class="auto form-control"><%= purchase.flightdeparture_note %></textarea>
+																		</div>
+																	</div>
+																	<div id="train_return" style="display:none;">
+																		<hr />
+																		<div class="form-group">
+																			<label class="col-md-3 control-label">Train Name <span class="required">*</span></label>
+																			<div class="col-md-9">
+																				<input type="text" id="disp_trainreturn_airlinename" name="disp_trainreturn_airlinename" value="<%= purchase.flightreturn_airlinename %>" class="form-control required">
+																			</div>
+																		</div>
+																		<div class="form-group">
+																			<label class="col-md-3 control-label">Train Booking ID <span class="required">*</span></label>
+																			<div class="col-md-9">
+																				<input type="text" id="disp_trainreturn_airlinebook" name="disp_trainreturn_airlinebook" value="<%= purchase.flightreturn_airlinebook %>" class="form-control required">
+																			</div>
+																		</div>
+																		<div class="form-group">
+																			<label class="col-md-3 control-label">Return Date <span class="required">*</span></label>
+																			<div class="col-md-3">
+																				<input type="text" id="disp_trainreturn_startdate" name="disp_trainreturn_startdate" value="<% if (moment(purchase.flightreturn_startdate).format('D-M-YYYY') != 'Invalid date') { %> <%= moment(purchase.flightreturn_startdate).format('D-M-YYYY') %> <% } %>" class="form-control datepicker required">
+																			</div>
+																			<label class="col-md-1 control-label">Time</label>
+																			<div class="col-md-2">
+																				<input type="text" class="form-control" id="disp_trainreturn_starttime" name="disp_trainreturn_starttime" value="">
+																			</div>
+																			<label class="col-md-1 control-label">Until</label>
+																			<div class="col-md-2">
+																				<input type="text" class="form-control" id="disp_trainreturn_endtime" name="disp_trainreturn_endtime" value="">
+																			</div>
+																		</div>
+																		<div class="form-group">
+																			<label class="col-md-3 control-label">Return Note</label>
+																			<div class="col-md-9">
+																				<textarea rows="2" cols="5" id="disp_trainreturn_note" name="disp_trainreturn_note" class="auto form-control"><%= purchase.flightreturn_note %></textarea>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+
+																<input type="hidden" id="category" name="category" value="<%= purchase.category %>">
+																<input type="hidden" id="flightdeparture_airlinebook" name="flightdeparture_airlinebook" value="<%= purchase.flightdeparture_airlinebook %>">
+														    <input type="hidden" id="flightdeparture_airlinename" name="flightdeparture_airlinename" value="<%= purchase.flightdeparture_airlinename %>">
+														    <input type="hidden" id="flightdeparture_startdate" name="flightdeparture_startdate" value="<% if (moment(purchase.flightdeparture_startdate).format('D-M-YYYY') != 'Invalid date') { %> <%= moment(purchase.flightdeparture_startdate).format('D-M-YYYY hh:mm') %> <% } %>">
+														    <input type="hidden" id="flightdeparture_enddate" name="flightdeparture_enddate" value="<% if (moment(purchase.flightdeparture_enddate).format('D-M-YYYY') != 'Invalid date') { %> <%= moment(purchase.flightdeparture_enddate).format('D-M-YYYY hh:mm') %> <% } %>">
+														    <input type="hidden" id="flightdeparture_airportfrom" name="flightdeparture_airportfrom" value="<%= purchase.flightdeparture_airportfrom %>">
+														    <input type="hidden" id="flightdeparture_airportto" name="flightdeparture_airportto" value="<%= purchase.flightdeparture_airportto %>">
+														    <input type="hidden" id="flightdeparture_terminal" name="flightdeparture_terminal" value="<%= purchase.flightdeparture_terminal %>">
+														    <input type="hidden" id="flightdeparture_note" name="flightdeparture_note" value="<%= purchase.flightdeparture_note %>">
+
+																<input type="hidden" id="flightreturn_airlinebook" name="flightreturn_airlinebook" value="<%= purchase.flightreturn_airlinebook %>">
+																<input type="hidden" id="flightreturn_airlinename" name="flightreturn_airlinename" value="<%= purchase.flightreturn_airlinename %>">
+																<input type="hidden" id="flightreturn_airportfrom" name="flightreturn_airportfrom" value="<%= purchase.flightreturn_airportfrom %>">
+																<input type="hidden" id="flightreturn_airportto" name="flightreturn_airportto" value="<%= purchase.flightreturn_airportto %>">
+																<div id="hidden_return">
+															    <input type="hidden" id="flightreturn_startdate" name="flightreturn_startdate" value="<% if (moment(purchase.flightreturn_startdate).format('D-M-YYYY') != 'Invalid date') { %> <%= moment(purchase.flightreturn_startdate).format('D-M-YYYY hh:mm') %> <% } %>">
+															    <input type="hidden" id="flightreturn_enddate" name="flightreturn_enddate" value="<% if (moment(purchase.flightreturn_enddate).format('D-M-YYYY') != 'Invalid date') { %> <%= moment(purchase.flightreturn_enddate).format('D-M-YYYY hh:mm') %> <% } %>">
+															    <input type="hidden" id="flightreturn_terminal" name="flightreturn_terminal" value="<%= purchase.flightreturn_terminal %>">
+															    <input type="hidden" id="flightreturn_note" name="flightreturn_note" value="<%= purchase.flightreturn_note %>">
+																</div>
+															</div>
+														</div>
+
+													</div>
+												</div>
+											</div>
+
+											<!-- Payment -->
+											<div class="col-md-6">
+												<div class="widget box">
+													<div class="widget-header">
+														<h4><i class="icon-money"></i> Payment</h4>
+														<div class="toolbar no-padding">
+															<div class="btn-group">
+																<span class="btn btn-xs" id="paid_refresh">Refresh</span>
+																<span class="btn btn-xs dropdown-toggle" data-toggle="dropdown">Already Paid Now <i class="icon-angle-down"></i></span>
+																<ul class="dropdown-menu pull-right">
+																	<li><a href="#" id="paid_transfer"><i class="icon-money"></i> Transfer Debit</a></li>
+																	<li><a href="#" id="paid_credit"><i class="icon-money"></i> Credit Card</a></li>
+																	<li><a href="#" id="paid_cash"><i class="icon-money"></i> Money Cash</a></li>
+																</ul>
+															</div>
+														</div>
+													</div>
+													<div class="widget-content" id="content_payment">
+														<div class="form-group">
+															<label class="col-md-3 control-label">Payment Method</label>
+															<div class="col-md-9">
+																<select id="disp_payment_method" name="disp_payment_method" class="form-control">
+					                        <option value=""></option>
+																	<option <% if (purchase.payment_method == 1) { %> selected <% } %> value="1">Transfer Debit</option>
+																	<option <% if (purchase.payment_method == 2) { %> selected <% } %> value="2">Credit Card</option>
+																	<option <% if (purchase.payment_method == 3) { %> selected <% } %> value="3">Money Cash</option>
+					                      </select>
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="col-md-3 control-label">Payment Date</label>
+															<div class="col-md-9">
+																<input type="text" id="disp_payment_date" name="disp_payment_date" value="<% if (moment(purchase.payment_date).format('D-M-YYYY') != 'Invalid date') { %> <%= moment(purchase.payment_date).format('D-M-YYYY') %> <% } %>" class="form-control datepicker">
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="col-md-3 control-label">Total Payment</label>
+															<div class="col-md-9">
+																<div class="input-group">
+																	<span class="input-group-addon">IDR</span>
+																	<input type="text" id="disp_total_payment" name="disp_total_payment" value="<%= purchase.total_payment %>" class="form-control">
+																</div>
+															</div>
+														</div>
+
+														<input type="hidden" id="payment_method" name="payment_method" value="<%= purchase.payment_method %>">
+														<input type="hidden" id="payment_date" name="payment_date" value="<% if (moment(purchase.payment_date).format('D-M-YYYY') != 'Invalid date') { %> <%= moment(purchase.payment_date).format('D-M-YYYY') %> <% } %>">
+														<input type="hidden" id="total_payment" name="total_payment" value="<%= purchase.total_payment %>">
+													</div>
+												</div>
+											</div>
+
+											<div class="col-md-6">
+												<div class="widget-content">
+													<div class="form-group">
+														<label class="col-md-2 control-label">Remark</label>
+														<div class="col-md-10">
+															<textarea rows="5" cols="5" name="remark" class="auto form-control"><%= purchase.remark %></textarea>
+														</div>
+													</div>
+												</div>
+											</div>
+
+										</div>
+									</div>
+
+                  <div class="form-actions">
+                    <a href="/purchase" class="btn btn-default pull-right"><i class="icon-repeat"></i> Cancel</a>
+										<% if (form_action == 'add' || purchase.status < 3) { %>
+										<button type="submit" class="btn btn-success pull-right"><i class="icon-save"></i> Save</button>
+										<% } %>
+  								</div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+			</div>
+		</div>
+	</div>
+
+	<script>
+		const priceFormatOptions = { decimalPlaces: 0, digitGroupSeparator: ',', decimalCharacter: '.', modifyValueOnWheel: false };
+		const priceFormatOptionReadOnly = { decimalPlaces: 0, digitGroupSeparator: ',', decimalCharacter: '.', modifyValueOnWheel: false, readOnly: true, unformatOnSubmit: true };
+
+		new AutoNumeric('#purchase', priceFormatOptions);
+		new AutoNumeric('#total_purchase', priceFormatOptions);
+		new AutoNumeric('#total_payment', priceFormatOptions);
+		new AutoNumeric('#disp_total_payment', priceFormatOptions);
+
+		var dateNow = $.datepicker.formatDate('dd-mm-yy', new Date());
+
+		function parseDate(str) {
+			var dmy = str.split('-');
+			return new Date(dmy[2], dmy[1]-1, dmy[0])
+		}
+
+		function dayDiff(start, end) {
+			return Math.round((end - start)/(1000 * 60 * 60 * 24))
+		}
+
+		function disabledPaymentMethod(istrue) {
+			$('#disp_payment_method').prop('disabled', istrue);
+			$('#disp_payment_date').prop('disabled', istrue);
+			$('#disp_total_payment').prop('disabled', istrue);
+		}
+
+		function paidNow(paymentMethod) {
+			if ($('#total_purchase').val() != '') {
+				$('#disp_payment_method').val(paymentMethod).trigger('change');
+				$('#disp_payment_date').val(dateNow).trigger('change');
+				$('#disp_total_payment').val($('#total_purchase').val()).trigger('change');
+				disabledPaymentMethod(true);
+			} else {
+				alert('Please input total purchase !!');
+			}
+		}
+
+		function copyto(from, to) {
+			$(to).val($(from).val());
+			$(from).on('change keyup keydown', function() {
+				$(to).val($(from).val());
+			});
+		}
+
+		function activeTabBooking(tab){
+			$('.nav-tabs a[href="' + tab + '"]').tab('show');
+			$('.tab-pane').removeClass('active');
+			$(tab).addClass('active');
+		};
+
+		function clearreturn() {
+			$('#flightreturn_airlinebook').val('');
+			$('#flightreturn_airlinename').val('');
+			$('#flightreturn_airportfrom').val('');
+			$('#flightreturn_airportto').val('');
+			$('#flightreturn_startdate').val('');
+			$('#flightreturn_enddate').val('');
+			$('#flightreturn_terminal').val('');
+			$('#flightreturn_note').val('');
+		}
+
+		// time format
+		$("#disp_flightdeparture_starttime").typeATime();
+		$("#disp_flightdeparture_endtime").typeATime();
+		$("#disp_flightreturn_starttime").typeATime();
+		$("#disp_flightreturn_endtime").typeATime();
+		$("#disp_traindeparture_starttime").typeATime();
+		$("#disp_traindeparture_endtime").typeATime();
+		$("#disp_trainreturn_starttime").typeATime();
+		$("#disp_trainreturn_endtime").typeATime();
+
+		<% if (purchase) { %>
+			$('#category').val('<%= purchase.category %>')
+			if ($('#category').val() == 1) {
+				activeTabBooking('#box_hotels');
+			} else if ($('#category').val() == 2) {
+				activeTabBooking('#box_flights');
+				var time_start = $('#flightdeparture_startdate').val().split(' ')[2];
+				var end_start = $('#flightdeparture_enddate').val().split(' ')[2];
+				$('#disp_flightdeparture_starttime').val(time_start);
+				$('#disp_flightdeparture_endtime').val(end_start);
+
+				if ($('#flightreturn_airlinebook').val() != '') {
+					var time_start = $('#flightreturn_startdate').val().split(' ')[2];
+					var end_start = $('#flightreturn_enddate').val().split(' ')[2];
+
+					$('#flight_round_trip').val('2').trigger('change');
+					$('#flight_return').show();
+					$('#disp_flightreturn_starttime').val(time_start);
+					$('#disp_flightreturn_endtime').val(end_start);
+				}
+			} else if ($('#category').val() == 3) {
+				activeTabBooking('#box_trains');
+				var time_start = $('#flightdeparture_startdate').val().split(' ')[2];
+				var end_start = $('#flightdeparture_enddate').val().split(' ')[2];
+				$('#disp_traindeparture_starttime').val(time_start);
+				$('#disp_traindeparture_endtime').val(end_start);
+
+				if ($('#flightreturn_airlinebook').val() != '') {
+					var time_start = $('#flightreturn_startdate').val().split(' ')[2];
+					var end_start = $('#flightreturn_enddate').val().split(' ')[2];
+
+					$('#train_round_trip').val('2').trigger('change');
+					$('#train_return').show();
+					$('#disp_trainreturn_starttime').val(time_start);
+					$('#disp_trainreturn_endtime').val(end_start);
+				}
+			}
+		<% } else { %>
+			$('#category').val('1');
+			activeTabBooking('#box_hotels');
+			$('#hotel_startdate').val('').trigger('change');
+			$('#hotel_enddate').val('').trigger('change');
+			$('#disp_payment_date').val('').trigger('change');
+			$('#payment_date').val('').trigger('change');
+			$('#flightdeparture_startdate').val('').trigger('change');
+			$('#flightdeparture_enddate').val('').trigger('change');
+			$('#flightreturn_startdate').val('').trigger('change');
+			$('#flightreturn_enddate').val('').trigger('change');
+		<% }%>
+
+		// clear all input in booking detail
+		$('a[data-toggle="tab"]').on('click', function (e) {
+			$('.tab-content input[type="text"], textarea').val('').trigger('change');
+			$('.tab-content select').val('1').trigger('change');
+			if (e.target.innerHTML == 'Hotels') {
+				$('#category').val('1')
+			} else if (e.target.innerHTML == 'Flights') {
+				$('#category').val('2')
+			} else if (e.target.innerHTML == 'Trains') {
+				$('#category').val('3')
+			}
+		});
+
+		// detail booking flight
+		$('#flight_round_trip').on('change keyup keydown', function() {
+			$('#flight_return input[type="text"], textarea').val('');
+
+			if ($('#flight_round_trip').val() == '1') {
+				$('#flight_return').hide();
+				$('#flightreturn_airlinebook').val('');
+				$('#flightreturn_airlinename').val('');
+				$('#flightreturn_airportfrom').val('');
+				$('#flightreturn_airportto').val('');
+				$('#flightreturn_startdate').val('');
+				$('#flightreturn_enddate').val('');
+				$('#flightreturn_terminal').val('');
+				$('#flightreturn_note').val('');
+			} else {
+				$('#flight_return').show();
+				$('#flightreturn_airportfrom').val($('#disp_flightdeparture_airportto').val());
+				$('#flightreturn_airportto').val($('#disp_flightdeparture_airportfrom').val());
+			}
+		});
+		$('#disp_flightdeparture_airlinename').on('change keyup keydown', function() {
+			$('#flightdeparture_airlinename').val($('#disp_flightdeparture_airlinename').val());
+		});
+		$('#disp_flightdeparture_airlinebook').on('change keyup keydown', function() {
+			$('#flightdeparture_airlinebook').val($('#disp_flightdeparture_airlinebook').val());
+		});
+		$('#disp_flightdeparture_airportfrom').on('change keyup keydown', function() {
+			$('#flightdeparture_airportfrom').val($('#disp_flightdeparture_airportfrom').val());
+		});
+		$('#disp_flightdeparture_airportto').on('change keyup keydown', function() {
+			$('#flightdeparture_airportto').val($('#disp_flightdeparture_airportto').val());
+		});
+		$('#disp_flightdeparture_startdate, #disp_flightdeparture_starttime').on('change keyup keydown', function() {
+			$('#flightdeparture_startdate').val($('#disp_flightdeparture_startdate').val() + ' ' + $('#disp_flightdeparture_starttime').val());
+		});
+		$('#disp_flightdeparture_startdate, #disp_flightdeparture_endtime').on('change keyup keydown', function() {
+			$('#flightdeparture_enddate').val($('#disp_flightdeparture_startdate').val() + ' ' + $('#disp_flightdeparture_endtime').val());
+		});
+		$('#disp_flightdeparture_terminal').on('change keyup keydown', function() {
+			$('#flightdeparture_terminal').val($('#disp_flightdeparture_terminal').val());
+		});
+		$('#disp_flightdeparture_note').on('change keyup keydown', function() {
+			$('#flightdeparture_note').val($('#disp_flightdeparture_note').val());
+		});
+
+		$('#disp_flightdeparture_airportto').on('change keyup keydown', function() {
+			if ($('#flight_round_trip').val() == '2') {
+				$('#flightreturn_airportfrom').val($('#disp_flightdeparture_airportto').val());
+			}
+		});
+		$('#disp_flightdeparture_airportfrom').on('change keyup keydown', function() {
+			if ($('#flight_round_trip').val() == '2') {
+				$('#flightreturn_airportto').val($('#disp_flightdeparture_airportfrom').val());
+			}
+		});
+		$('#disp_flightreturn_airlinename').on('change keyup keydown', function() {
+			$('#flightreturn_airlinename').val($('#disp_flightreturn_airlinename').val());
+		});
+		$('#disp_flightreturn_airlinebook').on('change keyup keydown', function() {
+			$('#flightreturn_airlinebook').val($('#disp_flightreturn_airlinebook').val());
+		});
+		$('#disp_flightreturn_startdate, #disp_flightreturn_starttime').on('change keyup keydown', function() {
+			$('#flightreturn_startdate').val($('#disp_flightreturn_startdate').val() + ' ' + $('#disp_flightreturn_starttime').val());
+		});
+		$('#disp_flightreturn_startdate, #disp_flightreturn_endtime').on('change keyup keydown', function() {
+			$('#flightreturn_enddate').val($('#disp_flightreturn_startdate').val() + ' ' + $('#disp_flightreturn_endtime').val());
+		});
+		$('#disp_flightreturn_terminal').on('change keyup keydown', function() {
+			$('#flightreturn_terminal').val($('#disp_flightreturn_terminal').val());
+		});
+		$('#disp_flightreturn_note').on('change keyup keydown', function() {
+			$('#flightreturn_note').val($('#disp_flightreturn_note').val());
+		});
+
+		// detail booking train
+		$('#train_round_trip').on('change keyup keydown', function() {
+			$('#train_return input[type="text"], textarea').val('');
+
+			if ($('#train_round_trip').val() == '1') {
+				$('#train_return').hide();
+				$('#flightdeparture_terminal').val('');
+				$('#flightreturn_airlinebook').val('');
+				$('#flightreturn_airlinename').val('');
+				$('#flightreturn_airportfrom').val('');
+				$('#flightreturn_airportto').val('');
+				$('#flightreturn_startdate').val('');
+				$('#flightreturn_enddate').val('');
+				$('#flightreturn_terminal').val('');
+				$('#flightreturn_note').val('');
+			} else {
+				$('#train_return').show();
+				$('#flightreturn_terminal').val('');
+				$('#flightreturn_airportfrom').val($('#disp_traindeparture_airportto').val());
+				$('#flightreturn_airportto').val($('#disp_traindeparture_airportfrom').val());
+			}
+		});
+		$('#disp_traindeparture_airlinename').on('change keyup keydown', function() {
+			$('#flightdeparture_airlinename').val($('#disp_traindeparture_airlinename').val());
+		});
+		$('#disp_traindeparture_airlinebook').on('change keyup keydown', function() {
+			$('#flightdeparture_airlinebook').val($('#disp_traindeparture_airlinebook').val());
+		});
+		$('#disp_traindeparture_airportfrom').on('change keyup keydown', function() {
+			$('#flightdeparture_airportfrom').val($('#disp_traindeparture_airportfrom').val());
+		});
+		$('#disp_traindeparture_airportto').on('change keyup keydown', function() {
+			$('#flightdeparture_airportto').val($('#disp_traindeparture_airportto').val());
+		});
+		$('#disp_traindeparture_startdate, #disp_traindeparture_starttime').on('change keyup keydown', function() {
+			$('#flightdeparture_startdate').val($('#disp_traindeparture_startdate').val() + ' ' + $('#disp_traindeparture_starttime').val());
+		});
+		$('#disp_traindeparture_startdate, #disp_traindeparture_endtime').on('change keyup keydown', function() {
+			$('#flightdeparture_enddate').val($('#disp_traindeparture_startdate').val() + ' ' + $('#disp_traindeparture_endtime').val());
+		});
+		$('#disp_traindeparture_note').on('change keyup keydown', function() {
+			$('#flightdeparture_note').val($('#disp_traindeparture_note').val());
+		});
+
+		$('#disp_traindeparture_airportto').on('change keyup keydown', function() {
+			if ($('#train_round_trip').val() == '2') {
+				$('#flightreturn_airportfrom').val($('#disp_traindeparture_airportto').val());
+			}
+		});
+		$('#disp_traindeparture_airportfrom').on('change keyup keydown', function() {
+			if ($('#train_round_trip').val() == '2') {
+				$('#flightreturn_airportto').val($('#disp_traindeparture_airportfrom').val());
+			}
+		});
+		$('#disp_trainreturn_airlinename').on('change keyup keydown', function() {
+			$('#flightreturn_airlinename').val($('#disp_trainreturn_airlinename').val());
+		});
+		$('#disp_trainreturn_airlinebook').on('change keyup keydown', function() {
+			$('#flightreturn_airlinebook').val($('#disp_trainreturn_airlinebook').val());
+		});
+		$('#disp_trainreturn_startdate, #disp_trainreturn_starttime').on('change keyup keydown', function() {
+			$('#flightreturn_startdate').val($('#disp_trainreturn_startdate').val() + ' ' + $('#disp_trainreturn_starttime').val());
+		});
+		$('#disp_trainreturn_startdate, #disp_trainreturn_endtime').on('change keyup keydown', function() {
+			$('#flightreturn_enddate').val($('#disp_trainreturn_startdate').val() + ' ' + $('#disp_trainreturn_endtime').val());
+		});
+		$('#disp_trainreturn_note').on('change keyup keydown', function() {
+			$('#flightreturn_note').val($('#disp_trainreturn_note').val());
+		});
+
+		// clear all input in payment method
+		$('#paid_refresh').on('click', function (e) {
+			disabledPaymentMethod(false);
+			$('#disp_payment_method').val('').trigger('change');
+			$('#content_payment input[type="text"]').val('');
+		});
+
+		$('#disp_payment_method').on('change keyup keydown', function() {
+			$('#payment_method').val($('#disp_payment_method').val());
+		});
+
+		$('#disp_payment_date').on('change keyup keydown', function() {
+			$('#payment_date').val($('#disp_payment_date').val());
+		});
+
+		$('#disp_total_payment').on('change keyup keydown', function() {
+			$('#total_payment').val($('#disp_total_payment').val());
+		});
+
+		$('#paid_transfer').click(function() {
+			paidNow('1');
+		});
+
+		$('#paid_credit').click(function() {
+			paidNow('2');
+		});
+
+		$('#paid_cash').click(function() {
+			paidNow('3');
+		});
+	</script>
+
+</body>
+</html>

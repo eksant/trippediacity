@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<%- include partials/metahead %>
+</head>
+
+<body class="breakpoint-1200 <%= setting.theme %>">
+  <%- include partials/header %>
+	<%- include partials/alert %>
+
+	<div id="container">
+		<%- include partials/sidebar %>
+
+		<div id="content">
+			<div class="container">
+				<%- include partials/breadcrumb %>
+
+				<%
+					var form_action = 'add'
+	        if (customer) {
+	          form_action = `edit/${customer.id}`
+	        }
+	      %>
+
+				<!-- Page Header -->
+        <div class="page-header"></div>
+
+        <!-- Page Content -->
+        <div class="row">
+          <div class="col-md-12">
+            <div class="widget box">
+							<div class="widget-header">
+								<h4><%= action %> <%= title %></h4>
+							</div>
+              <div class="widget-content">
+                <form action="/customer/<%= form_action %>" method="post" class="form-horizontal" id="validate-form">
+									<div class="form-group">
+										<label class="col-md-2 control-label">Name <span class="required">*</span></label>
+										<div class="col-md-10">
+											<input type="text" name="name" value="<%= customer.name %>" class="form-control required">
+										</div>
+									</div>
+                  <div class="form-group">
+										<label class="col-md-2 control-label">Username <span class="required">*</span></label>
+										<div class="col-md-10">
+											<input type="mail" name="username" value="<%= customer.username %>" class="form-control required">
+										</div>
+									</div>
+                  <div class="form-group">
+										<label class="col-md-2 control-label">Password <span class="required">*</span></label>
+										<div class="col-md-10">
+											<div class="input-group">
+												<span class="input-group-btn">
+													<button class="btn btn-default" type="button" onclick="genPassword()">Generate Password</button>
+												</span>
+												<input type="password" id="password" name="password" value="<%= customer.password %>" class="form-control required">
+											</div>
+										</div>
+									</div>
+
+									<hr />
+									<div class="form-group">
+										<label class="col-md-2 control-label">Gender <span class="required">*</span></label>
+										<div class="col-md-10">
+											<label class="radio-inline"><input type="radio" class="uniform" name="gender" <% if (customer.gender == 1) { %> checked <% } %> value="1">Male</label>
+											<label class="radio-inline"><input type="radio" class="uniform" name="gender" <% if (customer.gender == 2) { %> checked <% } %> value="2">Female</label>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-2 control-label">Email <span class="required">*</span></label>
+										<div class="col-md-4">
+											<input type="email" name="email" value="<%= customer.email %>" class="form-control required">
+										</div>
+										<label class="col-md-2 control-label">Mobile No <span class="required">*</span></label>
+										<div class="col-md-4">
+											<div class="input-group">
+												<span class="input-group-addon">+62</span>
+												<input type="number" name="mobile_no" value="<%= customer.mobile_no %>" class="form-control required">
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-2 control-label">Address</label>
+										<div class="col-md-10">
+											<input type="text" name="address" value="<%= customer.address %>" class="form-control">
+										</div>
+									</div>
+
+									<hr />
+									<div class="form-group">
+										<label class="col-md-2 control-label">Company Name</label>
+										<div class="col-md-4">
+											<input type="text" name="company_name" value="<%= customer.company_name %>" class="form-control">
+										</div>
+										<label class="col-md-2 control-label">Company Phone</label>
+										<div class="col-md-4">
+											<div class="input-group">
+												<span class="input-group-addon">+62</span>
+												<input type="number" name="company_phone" value="<%= customer.company_phone %>" class="form-control">
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-2 control-label">Company Address</label>
+										<div class="col-md-10">
+											<input type="text" name="company_address" value="<%= customer.company_address %>" class="form-control">
+										</div>
+									</div>
+
+                  <div class="form-actions">
+                    <a href="/customer" class="btn btn-default pull-right"><i class="icon-repeat"></i> Cancel</a>
+                    <button type="submit" class="btn btn-success pull-right"><i class="icon-save"></i> Save</button>
+  								</div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+			</div>
+		</div>
+	</div>
+
+	<script>
+		function genPassword() {
+		    document.getElementById("password").value = Math.random().toString(36).slice(-8);
+		}
+	</script>
+
+</body>
+</html>

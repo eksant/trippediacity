@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<%- include partials/metahead %>
+</head>
+
+<body class="breakpoint-1200 <%= setting.theme %>">
+  <%- include partials/header %>
+	<%- include partials/alert %>
+
+	<div id="container">
+		<%- include partials/sidebar %>
+
+		<div id="content">
+			<div class="container">
+				<%- include partials/breadcrumb %>
+
+				<%
+					var form_action = 'add'
+	        if (user) {
+	          form_action = `edit/${user.id}`
+	        }
+	      %>
+
+				<!-- Page Header -->
+        <div class="page-header"></div>
+
+        <!-- Page Content -->
+        <div class="row">
+          <div class="col-md-12">
+            <div class="widget box">
+							<div class="widget-header">
+								<h4><%= action %> <%= title %></h4>
+							</div>
+              <div class="widget-content">
+                <form action="/user/<%= form_action %>" method="post" class="form-horizontal" id="validate-form">
+                  <div class="form-group">
+										<label class="col-md-2 control-label">Name <span class="required">*</span></label>
+										<div class="col-md-10">
+											<input type="text" name="name" value="<%= user.name %>" class="form-control required">
+										</div>
+									</div>
+                  <div class="form-group">
+										<label class="col-md-2 control-label">Username <span class="required">*</span></label>
+										<div class="col-md-10">
+											<input type="mail" name="username" value="<%= user.username %>" class="form-control required">
+										</div>
+									</div>
+                  <div class="form-group">
+										<label class="col-md-2 control-label">Password <span class="required">*</span></label>
+										<div class="col-md-10">
+											<div class="input-group">
+												<span class="input-group-btn">
+													<button class="btn btn-default" type="button" onclick="genPassword()">Generate Password</button>
+												</span>
+												<input type="password" id="password" name="password" value="<%= user.password %>" class="form-control required">
+											</div>
+										</div>
+									</div>
+                  <div class="form-group">
+										<label class="col-md-2 control-label">Role <span class="required">*</span></label>
+										<div class="col-md-10">
+									    <select id="role" name="role" class="form-control required">
+                        <option value=""></option>
+												<% if (user.role == 1) { %>
+                        <option <% if (user.role == 1) { %> selected <% } %> value="1">Superadmin</option>
+												<% } %>
+                        <option <% if (user.role == 2) { %> selected <% } %> value="2">Investor</option>
+												<option <% if (user.role == 3) { %> selected <% } %> value="3">Admin</option>
+                      </select>
+										</div>
+									</div>
+
+									<hr />
+									<div class="form-group">
+										<label class="col-md-2 control-label">Gender <span class="required">*</span></label>
+										<div class="col-md-10">
+											<label class="radio-inline"><input type="radio" class="uniform" name="gender" <% if (user.gender == 1) { %> checked <% } %> value="1">Male</label>
+											<label class="radio-inline"><input type="radio" class="uniform" name="gender" <% if (user.gender == 2) { %> checked <% } %> value="2">Female</label>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-2 control-label">Email <span class="required">*</span></label>
+										<div class="col-md-4">
+											<input type="email" name="email" value="<%= user.email %>" class="form-control required">
+										</div>
+										<label class="col-md-2 control-label">Mobile No <span class="required">*</span></label>
+										<div class="col-md-4">
+											<div class="input-group">
+												<span class="input-group-addon">+62</span>
+												<input type="number" name="mobile_no" value="<%= user.mobile_no %>" class="form-control required">
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-2 control-label">Address</label>
+										<div class="col-md-10">
+											<input type="text" name="address" value="<%= user.address %>" class="form-control">
+										</div>
+									</div>
+
+									<div id="bank_investment" style="display:none;">
+										<hr />
+										<div class="form-group">
+											<label class="col-md-2 control-label">Bank Name</label>
+											<div class="col-md-4">
+												<select id="bank_name" name="bank_name" class="form-control required">
+	                        <option value=""></option>
+													<option <% if (user.bank_name == 'Bank BCA') { %> selected <% } %> value="Bank BCA">Bank BCA</option>
+	                        <option <% if (user.bank_name == 'Bank BCA Syariah') { %> selected <% } %> value="Bank BCA Syariah">Bank BCA Syariah</option>
+													<option <% if (user.bank_name == 'Bank Danamon Indonesia') { %> selected <% } %> value="Bank Danamon Indonesia">Bank Danamon Indonesia</option>
+													<option <% if (user.bank_name == 'Bank BNI') { %> selected <% } %> value="Bank BNI">Bank BNI</option>
+	                        <option <% if (user.bank_name == 'Bank BNI Syariah') { %> selected <% } %> value="Bank BNI Syariah">Bank BNI Syariah</option>
+													<option <% if (user.bank_name == 'Bank BRI') { %> selected <% } %> value="Bank BRI">Bank BRI</option>
+													<option <% if (user.bank_name == 'Bank BRI Syariah') { %> selected <% } %> value="Bank BRI Syariah">Bank BRI Syariah</option>
+													<option <% if (user.bank_name == 'Bank BTPN Syariah') { %> selected <% } %> value="Bank BTPN Syariah">Bank BTPN Syariah</option>
+													<option <% if (user.bank_name == 'Bank Bukopin') { %> selected <% } %> value="Bank Bukopin">Bank Bukopin</option>
+													<option <% if (user.bank_name == 'Bank Mandiri') { %> selected <% } %> value="Bank Mandiri">Bank Mandiri</option>
+													<option <% if (user.bank_name == 'Bank Mega') { %> selected <% } %> value="Bank Mega">Bank Mega</option>
+													<option <% if (user.bank_name == 'Bank Mega Syariah') { %> selected <% } %> value="Bank Mega Syariah">Bank Mega Syariah</option>
+													<option <% if (user.bank_name == 'Bank Muamalat Indonesia') { %> selected <% } %> value="Bank Muamalat Indonesia">Bank Muamalat Indonesia</option>
+													<option <% if (user.bank_name == 'Bank Syariah Mandiri') { %> selected <% } %> value="Bank Syariah Mandiri">Bank Syariah Mandiri</option>
+	                      </select>
+											</div>
+											<label class="col-md-2 control-label">Investment Value</label>
+											<div class="col-md-4">
+												<div class="input-group">
+													<span class="input-group-addon">IDR</span>
+													<input type="text" id="disp_investment_value" name="disp_investment_value" <% if (user) { %> value="<%= user.investment_value %>" <% } else { %> value="<%= setting.investment_value %>" <% } %> class="form-control" disabled>
+												</div>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-2 control-label">Bank Account Name</label>
+											<div class="col-md-4">
+												<input type="text" id="bank_account" name="bank_account" value="<%= user.bank_account %>" class="form-control">
+											</div>
+											<label class="col-md-2 control-label">Investment Slot</label>
+											<div class="col-md-4">
+												<select id="investment_slot" name="investment_slot" <% if (purchase.length > 0) { %> disabled <% } %> class="form-control required">
+	                        <option value=""></option>
+													<% for (let i = 1; i <= 10; i++) { %>
+														<option <% if (user.investment_slot == i) { %> selected <% } %> value="<%= i %>"><%= i %> slot</option>
+													<% } %>
+	                      </select>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-2 control-label">Bank Account Number</label>
+											<div class="col-md-4">
+												<input type="number" id="bank_number" name="bank_number" value="<%= user.bank_number %>" class="form-control">
+											</div>
+											<label class="col-md-2 control-label">Total Investment</label>
+											<div class="col-md-4">
+												<div class="input-group">
+													<span class="input-group-addon">IDR</span>
+													<input type="text" id="disp_investment_total" name="disp_investment_total" value="<%= user.investment_total %>" class="form-control" disabled>
+												</div>
+											</div>
+										</div>
+
+										<input type="hidden" id="investment_value" name="investment_value" <% if (user) { %> value="<%= user.investment_value %>" <% } else { %> value="<%= setting.investment_value %>" <% } %>>
+										<input type="hidden" id="investment_total" name="investment_total" value="<%= user.investment_total %>">
+									</div>
+
+									<hr />
+									<div class="form-group">
+										<label class="col-md-2 control-label">Company Name</label>
+										<div class="col-md-4">
+											<input type="text" name="company_name" value="<%= user.company_name %>" class="form-control">
+										</div>
+										<label class="col-md-2 control-label">Company Phone</label>
+										<div class="col-md-4">
+											<div class="input-group">
+												<span class="input-group-addon">+62</span>
+												<input type="number" name="company_phone" value="<%= user.company_phone %>" class="form-control">
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-2 control-label">Company Address</label>
+										<div class="col-md-10">
+											<input type="text" name="company_address" value="<%= user.company_address %>" class="form-control">
+										</div>
+									</div>
+
+                  <div class="form-actions">
+										<%
+											var labelNotification = ''
+											if (!user && setting.mail_username != undefined) {
+												labelNotification = 'The system will send email notifications automatically if checked.'
+												if (setting.sms_apikey != '') {
+													labelNotification = 'The system will send email and sms notifications automatically if checked.'
+												}
+										%>
+											<span>
+												<div class="checker">
+													<span><input type="checkbox" name="notification" value="1" checked class="uniform"></span>
+												</div> <%= labelNotification %> <%= setting.sms_apikey %>
+											</span>
+										<% }%>
+                    <a href="/user" class="btn btn-default pull-right"><i class="icon-repeat"></i> Cancel</a>
+                    <button type="submit" class="btn btn-success pull-right"><i class="icon-save"></i> Save</button>
+  								</div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+			</div>
+		</div>
+	</div>
+
+	<script>
+		const priceFormatOptions = { decimalPlaces: 0, digitGroupSeparator: ',', decimalCharacter: '.', modifyValueOnWheel: false };
+		const priceFormatOptionReadOnly = { decimalPlaces: 0, digitGroupSeparator: ',', decimalCharacter: '.', modifyValueOnWheel: false, readOnly: true, unformatOnSubmit: true };
+
+		new AutoNumeric('#disp_investment_value', priceFormatOptions);
+		new AutoNumeric('#disp_investment_total', priceFormatOptions);
+
+		function genPassword() {
+		    document.getElementById("password").value = Math.random().toString(36).slice(-8);
+		}
+
+		function formatCurrency(total) {
+	    var neg = false;
+			if (total == '' || total == null) {
+				return ''
+			}
+	    if (total < 0) {
+	    	neg = true;
+	      total = Math.abs(total);
+	    }
+			var res = (neg ? "-" : '') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
+	    return res.split('.')[0]
+		}
+
+		function clearBankInvestment() {
+			$('#bank_name').val('');
+			$('#bank_account').val('');
+			$('#bank_number').val('');
+			$('#disp_investment_value').val('');
+			$('#investment_slot').val('');
+			$('#disp_investment_total').val('');
+			$('#investment_value').val('');
+			$('#investment_total').val('');
+		}
+
+		<% if (user) { %>
+			var inv_value = <%= user.investment_value %>
+			<% if (user.role == 2) { %>
+				$('#bank_investment').show();
+			<% } %>
+		<% } else { %>
+			var inv_value = <%= setting.investment_value %>
+		<% } %>
+
+		$('#role').on('change keyup keydown', function() {
+			clearBankInvestment();
+
+			if ($('#role').val() == '2') {
+				$('#bank_investment').show();
+				$('#disp_investment_value').val(formatCurrency(inv_value));
+				$('#investment_value').val(inv_value);
+			} else {
+				$('#bank_investment').hide();
+			}
+		});
+
+		$('#investment_slot').on('change keyup keydown', function() {
+			if ($('#investment_slot').val() != '') {
+				var inv_val 	= $('#investment_value').val();
+				var inv_total = inv_val * $('#investment_slot').val();
+
+				$('#disp_investment_total').val(formatCurrency(inv_total));
+				$('#investment_total').val(inv_total);
+			} else {
+				$('#disp_investment_total').val('');
+				$('#investment_total').val('0');
+			};
+		});
+	</script>
+
+</body>
+</html>

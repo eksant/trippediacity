@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<%- include partials/metahead %>
+</head>
+
+<body class="breakpoint-1200 <%= setting.theme %>">
+  <%- include partials/header %>
+	<%- include partials/alert %>
+
+	<div id="container">
+		<%- include partials/sidebar %>
+
+		<div id="content">
+			<div class="container">
+				<%- include partials/breadcrumb %>
+
+				<%
+					var form_action = 'add'
+	        if (agent) {
+	          form_action = `edit/${agent.id}`
+	        }
+	      %>
+
+				<!-- Page Header -->
+        <div class="page-header"></div>
+
+        <!-- Page Content -->
+        <div class="row">
+          <div class="col-md-12">
+            <div class="widget box">
+							<div class="widget-header">
+								<h4><%= action %> <%= title %></h4>
+							</div>
+              <div class="widget-content">
+                <form action="/agent/<%= form_action %>" method="post" class="form-horizontal" id="validate-form">
+									<div class="form-group">
+										<label class="col-md-2 control-label">Agent Name <span class="required">*</span></label>
+										<div class="col-md-4">
+											<input type="text" name="name" value="<%= agent.name %>" class="form-control required">
+										</div>
+										<label class="col-md-2 control-label">Agent Code <span class="required">*</span></label>
+										<div class="col-md-4">
+											<input type="text" name="code" value="<%= agent.code %>" class="form-control required">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-2 control-label">Address <span class="required">*</span></label>
+										<div class="col-md-4">
+											<input type="text" name="address" value="<%= agent.address %>" class="form-control required">
+										</div>
+										<label class="col-md-2 control-label">Company Phone</label>
+										<div class="col-md-4">
+											<div class="input-group">
+												<span class="input-group-addon">+62</span>
+												<input type="number" name="phone_no" value="<%= agent.phone_no %>" class="form-control">
+											</div>
+										</div>
+									</div>
+
+                  <div class="form-actions">
+                    <a href="/agent" class="btn btn-default pull-right"><i class="icon-repeat"></i> Cancel</a>
+                    <button type="submit" class="btn btn-success pull-right"><i class="icon-save"></i> Save</button>
+  								</div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+			</div>
+		</div>
+	</div>
+
+	<script>
+		function genPassword() {
+		    document.getElementById("password").value = Math.random().toString(36).slice(-8);
+		}
+	</script>
+
+</body>
+</html>

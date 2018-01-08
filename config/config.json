@@ -1,0 +1,16 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "p4ssw0rd",
+    "database": "trippediacity",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "nawcyjyu",
+    "password": "u8Ila9G5jKfa1wZKg5DC5_OhHYL0hyXj",
+    "database": "nawcyjyu",
+    "host": "tantor.db.elephantsql.com",
+    "dialect": "postgres"
+  }
+}

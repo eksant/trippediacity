@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<%- include partials/metahead %>
+</head>
+
+<body class="breakpoint-1200 <%= setting.theme %>">
+  <%- include partials/header %>
+	<%- include partials/alert %>
+
+	<div id="container">
+		<%- include partials/sidebar %>
+
+		<div id="content">
+			<div class="container">
+				<%- include partials/breadcrumb %>
+
+				<!-- Page Header -->
+        <div class="page-header"></div>
+
+        <!-- Page Content -->
+        <div class="row">
+          <div class="col-md-12">
+						<div class="widget box">
+							<div class="widget-header">
+								<h4><%= title %></h4>
+							</div>
+              <div class="widget-content no-padding">
+                <table class="table table-striped table-bordered table-hover datatable" data-horizontal-width="100%">
+									<thead>
+										<tr>
+											<th>No</th>
+											<th>Name</th>
+											<th>Username</th>
+											<th>Mobile No</th>
+											<th>Email</th>
+											<th>Company Name</th>
+											<th>Actions</th>
+										</tr>
+									</thead>
+									<tbody>
+                    <%
+                      for (let i = 0; i < customer.length; i++) {
+                    %>
+                      <tr>
+  											<td><%= i + 1 %>.&nbsp;&nbsp;</td>
+  											<td><%= customer[i].name %></td>
+  											<td><%= customer[i].username %></td>
+  											<td>+62<%= customer[i].mobile_no %></td>
+												<td><%= customer[i].email %></td>
+												<td><%= customer[i].company_name %></td>
+  											<td align="center">
+                          <a href="/customer/edit/<%= customer[i].id %>" class="btn btn-xs btn-primary"><i class="icon-edit"></i></a>
+                          <a href="/customer/delete/<%= customer[i].id %>" class="btn btn-xs btn-danger confirm-dialog"><i class="icon-remove"></i></a>
+                        </td>
+  										</tr>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

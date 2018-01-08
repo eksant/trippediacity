@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<%- include partials/metahead %>
+</head>
+
+<body class="breakpoint-1200 <%= setting.theme %>">
+  <%- include partials/header %>
+	<%- include partials/alert %>
+
+	<div id="container">
+		<%- include partials/sidebar %>
+
+		<div id="content">
+			<div class="container">
+				<%- include partials/breadcrumb %>
+
+				<!-- Page Header -->
+        <div class="page-header"></div>
+
+        <!-- Page Content -->
+        <div class="row">
+          <div class="col-md-12">
+						<div class="widget box">
+							<div class="widget-header">
+								<h4><%= title %></h4>
+							</div>
+              <div class="widget-content no-padding">
+                <table class="table table-striped table-bordered table-hover table-exports datatable" data-horizontal-width="150%">
+									<thead>
+										<tr>
+											<th>No</th>
+											<th>Create Date</th>
+											<th>Name</th>
+											<th>Category</th>
+											<th>Booking ID</th>
+											<th>Booking Details</th>
+
+											<th>No Invoice</th>
+											<th>Total Invoice (IDR)</th>
+											<th>Payment Date</th>
+											<th>Total Payment</th>
+											<th>Payment Method</th>
+											<th>Status</th>
+											<th>Created By</th>
+										</tr>
+									</thead>
+									<tbody>
+                    <%
+											moment.updateLocale('id', null)
+                      for (let i = 0; i < sale.length; i++) {
+												var getBookingDetails = ''
+
+												if (sale[i].Purchase.category == 1) {
+													getBookingDetails = `Voucher ${sale[i].Purchase.getCategory()} ${sale[i].Purchase.hotel_name} (${moment(sale[i].Purchase.hotel_startdate).format('D MMM YYYY')} - ${moment(sale[i].Purchase.hotel_enddate).format('D MMM YYYY')})`
+												} else {
+													let round = `Dep: ${sale[i].Purchase.flightdeparture_airlinename} ${moment(sale[i].Purchase.flightdeparture_startdate).format('D MMM YYYY')}`
+													if (sale[i].Purchase.flightreturn_airlinebook != '') {
+														round = `Dep: ${sale[i].Purchase.flightdeparture_airlinename} ${moment(sale[i].Purchase.flightdeparture_startdate).format('D MMM YYYY')} | Ret: ${sale[i].Purchase.flightreturn_airlinename} ${moment(sale[i].Purchase.flightreturn_startdate).format('D MMM YYYY')}`
+													}
+								          getBookingDetails = `Ticket ${sale[i].Purchase.getCategory()} (${round})`
+								        }
+                    %>
+                      <tr>
+  											<td><%= i + 1 %>.&nbsp;&nbsp;</td>
+  											<td><%= moment(sale[i].createdAt).format('D-M-YYYY') %></td>
+  											<td><%= sale[i].Customer.name %></td>
+												<td><%= sale[i].Purchase.getCategory() %></td>
+												<td><%= sale[i].Purchase.booking_id %></td>
+												<td><%= getBookingDetails %></td>
+												<td><%= sale[i].no_invoice %></td>
+												<td align="right"><%= formatMoney(sale[i].total_sale) %></td>
+												<td><% if (moment(sale[i].payment_date).format('D-M-YYYY') != 'Invalid date') { %> <%= moment(sale[i].payment_date).format('D-M-YYYY') %> <% } %></td>
+												<td align="right"><%= formatMoney(sale[i].total_payment) %></td>
+												<td><%= sale[i].getPaymentMethod() %></td>
+												<td><span class="label label-<%= sale[i].getStatus().label %>"><%= sale[i].getStatus().status %></span></td>
+												<td><%= sale[i].User.name %></td>
+  										</tr>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<%- include partials/metahead %>
+</head>
+
+<body class="breakpoint-1200 <%= setting.theme %>">
+  <%- include partials/header %>
+	<%- include partials/alert %>
+
+	<div id="container">
+		<%- include partials/sidebar %>
+
+		<div id="content">
+			<div class="container">
+				<%- include partials/breadcrumb %>
+
+        <%
+					var photo = 'blank_user.png'
+					if (user.photo) {
+						photo = user.photo
+					}
+        %>
+
+				<!-- Page Header -->
+        <div class="page-header">
+          <div class="page-title">
+						<h3>User Profile</h3>
+						<span>Hello, <%= user.name %>!</span>
+					</div>
+        </div>
+
+        <!-- Page Content -->
+        <div class="row">
+          <div class="col-md-12">
+
+            <div class="tabbable tabbable-custom tabbable-full-width">
+							<ul class="nav nav-tabs">
+								<li class="active"><a href="#tab_overview" data-toggle="tab">Overview</a></li>
+								<li><a href="#tab_edit_profile" data-toggle="tab">Edit Profile</a></li>
+							</ul>
+							<div class="tab-content row">
+								<!--=== Overview ===-->
+								<div class="tab-pane active" id="tab_overview">
+									<div class="col-md-3">
+										<div class="list-group">
+											<li class="list-group-item no-padding">
+												<img src="/public/uploads/profile/<%= photo %>" onError="this.src='/public/uploads/profile/blank_user.png';" height="392px" width="392px" alt="<%= user.name %>" align="center">
+											</li>
+											<div class="list-group-item">
+												<form action="/profile/upload" method="post" encType="multipart/form-data">
+													<div class="form-group">
+														<label class="control-label">Photo Profile Upload:</label>
+														<input type="file" name="photo_profile" accept="image/*" data-style="fileinput">
+													</div>
+													<button type="submit" class="btn btn-primary btn-block">Upload Photo</button>
+												</form>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-9">
+										<div class="row profile-info">
+											<div class="col-md-7">
+												<h1><%= user.name %></h1>
+
+												<dl class="dl-horizontal">
+													<dt>Name</dt>
+													<dd><%= user.name %></dd>
+                          <dt>Username</dt>
+													<dd><%= user.username %></dd>
+													<dt>Role</dt>
+													<dd><%= user.getRole() %></dd>
+													<dt>Mobile No.</dt>
+													<dd><% if (user.mobile_no != '') { %> +62<%= user.mobile_no %> <% } %></dd>
+													<dt>Email</dt>
+													<dd><%= user.email %></dd>
+                          <dt>Address</dt>
+													<dd><%= user.address %></dd>
+                          <dt>&nbsp;</dt>
+                          <dd>&nbsp;</dd>
+                          <dt>Company Name</dt>
+													<dd><%= user.company_name %></dd>
+                          <dt>Phone No.</dt>
+													<dd><% if (user.company_phone != '') { %> +62<%= user.company_phone %> <% } %></dd>
+												</dl>
+
+											</div>
+											<!-- <div class="col-md-5">
+												<div class="widget">
+													<div class="widget-header">
+														<h4><i class="icon-reorder"></i> Sales</h4>
+													</div>
+													<div class="widget-content">
+														<div id="chart_filled_blue" class="chart"></div>
+													</div>
+												</div>
+											</div> -->
+										</div> <!-- /.row -->
+
+										<div class="row">
+											<div class="col-md-12">
+												<div class="widget">
+													<div class="widget-content">
+														<table class="table table-hover table-striped">
+															<thead>
+																<tr>
+																	<th>#</th>
+																	<th>Last Login</th>
+																	<th>IP Address</th>
+																	<th>Status</th>
+																	<th>Information</th>
+																</tr>
+															</thead>
+															<tbody>
+																<% for (let i = 0; i < log.length; i++) { %>
+																	<tr>
+																		<td><%= i + 1 %></td>
+																		<td><%= log[i].last_login %></td>
+																		<td><%= log[i].ip_address %></td>
+																		<td><span class="label label-<%= log[i].status %>"><%= log[i].status %></span></td>
+																		<td><%= log[i].remark %></td>
+																	</tr>
+																<% } %>
+															</tbody>
+														</table>
+													</div>
+												</div>
+											</div>
+											<!-- /Striped Table -->
+										</div> <!-- /.row -->
+
+									</div>
+								</div>
+								<!-- /Overview -->
+
+								<!--=== Edit Account ===-->
+								<div class="tab-pane" id="tab_edit_profile">
+									<form action="/profile/edit" method="post" class="form-horizontal" id="validate-form">
+										<div class="col-md-12">
+											<div class="widget">
+												<div class="widget-header">
+													<h4>General Information</h4>
+												</div>
+												<div class="widget-content">
+													<div class="row">
+														<div class="col-md-6">
+															<div class="form-group">
+																<label class="col-md-4 control-label">Name <span class="required">*</span></label>
+																<div class="col-md-8"><input type="text" name="name" value="<%= user.name %>" class="form-control required"></div>
+															</div>
+															<div class="form-group">
+																<label class="col-md-4 control-label">Email <span class="required">*</span></label>
+																<div class="col-md-8"><input type="email" name="email" value="<%= user.email %>" class="form-control required"></div>
+															</div>
+														</div>
+														<div class="col-md-6">
+															<div class="form-group">
+                                <label class="col-md-4 control-label">Address</label>
+																<div class="col-md-8"><input type="text" name="address" class="form-control" value="<%= user.address %>"></div>
+															</div>
+															<div class="form-group">
+																<label class="col-md-4 control-label">Mobile No <span class="required">*</span></label>
+                                <div class="col-md-8">
+                                  <div class="input-group">
+            												<span class="input-group-addon">+62</span>
+            												<input type="number" name="mobile_no" value="<%= user.mobile_no %>" class="form-control required">
+            											</div>
+                                </div>
+															</div>
+														</div>
+                            <div class="col-md-6">
+															<div class="form-group">
+																<label class="col-md-4 control-label">Company Name</label>
+																<div class="col-md-8"><input type="text" name="company_name" class="form-control" value="<%= user.company_name %>"></div>
+															</div>
+														</div>
+                            <div class="col-md-6">
+															<div class="form-group">
+																<label class="col-md-4 control-label">Phone No</label>
+                                <div class="col-md-8">
+                                  <div class="input-group">
+            												<span class="input-group-addon">+62</span>
+            												<input type="number" name="company_phone" value="<%= user.company_phone %>" class="form-control">
+            											</div>
+                                </div>
+															</div>
+														</div>
+													</div> <!-- /.row -->
+												</div> <!-- /.widget-content -->
+											</div> <!-- /.widget -->
+										</div> <!-- /.col-md-12 -->
+
+										<div class="col-md-12 form-vertical no-margin">
+											<div class="widget">
+												<div class="widget-header">
+													<h4>Settings</h4>
+												</div>
+												<div class="widget-content">
+													<div class="row">
+														<div class="col-md-4 col-lg-2">
+															<strong class="subtitle padding-top-10px">Permanent username</strong>
+														</div>
+														<div class="col-md-8 col-lg-10">
+															<div class="form-group">
+																<label class="control-label padding-top-10px">Username:</label>
+																<input type="text" name="username" class="form-control" value="<%= user.username %>" disabled="disabled">
+															</div>
+														</div>
+													</div> <!-- /.row -->
+													<div class="row">
+														<div class="col-md-4 col-lg-2">
+															<strong class="subtitle">Change password</strong>
+														</div>
+														<div class="col-md-8 col-lg-10">
+															<div class="form-group">
+																<label class="control-label">New password:</label>
+																<input type="password" name="new_password" class="form-control" placeholder="Leave empty for no password-change">
+															</div>
+															<div class="form-group">
+																<label class="control-label">Repeat new password:</label>
+																<input type="password" name="new_password_repeat" class="form-control" placeholder="Leave empty for no password-change">
+															</div>
+														</div>
+													</div> <!-- /.row -->
+												</div> <!-- /.widget-content -->
+											</div> <!-- /.widget -->
+
+											<div class="form-actions">
+												<input type="submit" value="Update Account" class="btn btn-primary pull-right">
+											</div>
+										</div> <!-- /.col-md-12 -->
+									</form>
+								</div>
+								<!-- /Edit Account -->
+							</div> <!-- /.tab-content -->
+						</div>
+						<!--END TABS-->
+
+          </div>
+        </div>
+
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

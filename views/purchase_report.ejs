@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<%- include partials/metahead %>
+</head>
+
+<body class="breakpoint-1200 <%= setting.theme %>">
+  <%- include partials/header %>
+	<%- include partials/alert %>
+
+	<div id="container">
+		<%- include partials/sidebar %>
+
+		<div id="content">
+			<div class="container">
+				<%- include partials/breadcrumb %>
+
+				<!-- Page Header -->
+        <div class="page-header"></div>
+
+        <!-- Page Content -->
+        <div class="row">
+          <div class="col-md-12">
+						<div class="widget box">
+							<div class="widget-header">
+								<h4><%= title %></h4>
+							</div>
+              <div class="widget-content no-padding">
+                <table class="table table-striped table-bordered table-hover table-exports datatable" data-horizontal-width="150%">
+									<thead>
+										<tr>
+											<th>No</th>
+											<th>Create Date</th>
+											<th>No Purchase</th>
+											<th>Agent Name</th>
+											<th>Category</th>
+											<th>Booking ID</th>
+											<th>Rate (IDR)</th>
+											<th>Total Invoice (IDR)</th>
+											<th>Payment Date</th>
+											<th>Total Payment</th>
+											<th>Payment Method</th>
+											<th>Status</th>
+											<th>Created By</th>
+										</tr>
+									</thead>
+									<tbody>
+                    <%
+											moment.updateLocale('id', null)
+                      for (let i = 0; i < purchase.length; i++) {
+                    %>
+                      <tr>
+  											<td><%= i + 1 %>.&nbsp;&nbsp;</td>
+  											<td><%= moment(purchase[i].createdAt).format('D-M-YYYY') %></td>
+												<td><%= purchase[i].no_invoice %></td>
+  											<td><%= purchase[i].Agent.name %></td>
+												<td><%= purchase[i].getCategory() %></td>
+												<td><%= purchase[i].booking_id %></td>
+												<td align="right"><%= formatMoney(purchase[i].purchase) %></td>
+												<td align="right"><%= formatMoney(purchase[i].total_purchase) %></td>
+												<td><% if (moment(purchase[i].payment_date).format('D-M-YYYY') != 'Invalid date') { %> <%= moment(purchase[i].payment_date).format('D-M-YYYY') %> <% } %></td>
+												<td align="right"><%= formatMoney(purchase[i].total_payment) %></td>
+												<td><%= purchase[i].getPaymentMethod() %></td>
+												<td><span class="label label-<%= purchase[i].getStatus().label %>"><%= purchase[i].getStatus().status %></span></td>
+												<td><%= purchase[i].User.name %></td>
+  										</tr>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

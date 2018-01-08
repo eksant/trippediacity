@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+	<title>Trippediacity - <%= title %></title>
+  <link href="/public/assets/img/favicon.ico" rel="shortcut icon" type="image/x-icon">
+
+	<!-- Bootstrap -->
+	<link href="/public/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
+	<!-- Theme -->
+	<link href="/public/assets/css/main.css" rel="stylesheet" type="text/css" />
+	<link href="/public/assets/css/plugins.css" rel="stylesheet" type="text/css" />
+	<link href="/public/assets/css/responsive.css" rel="stylesheet" type="text/css" />
+	<link href="/public/assets/css/icons.css" rel="stylesheet" type="text/css" />
+
+	<!-- Login -->
+	<link href="/public/assets/css/login.css" rel="stylesheet" type="text/css" />
+
+	<link href="/public/assets/css/fontawesome/font-awesome.min.css" rel="stylesheet">
+	<!--[if IE 7]>
+		<link rel="stylesheet" href="assets/css/fontawesome/font-awesome-ie7.min.css">
+	<![endif]-->
+
+	<!--[if IE 8]>
+		<link href="assets/css/ie8.css" rel="stylesheet" type="text/css" />
+	<![endif]-->
+	<!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'> -->
+
+	<!--=== JavaScript ===-->
+	<script src="/public/assets/js/libs/jquery-1.10.2.min.js" type="text/javascript"></script>
+	<script src="/public/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="/public/assets/js/libs/lodash.compat.min.js" type="text/javascript"></script>
+
+	<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+		<script src="assets/js/libs/html5shiv.js"></script>
+	<![endif]-->
+
+	<!-- Beautiful Checkboxes -->
+	<script src="/public/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+
+	<!-- Form Validation -->
+	<script src="/public/plugins/validation/jquery.validate.min.js" type="text/javascript"></script>
+
+	<!-- Slim Progress Bars -->
+	<script src="/public/plugins/nprogress/nprogress.js" type="text/javascript"></script>
+
+	<!-- App -->
+	<script src="/public/assets/js/login.js" type="text/javascript"></script>
+	<script>
+	$(document).ready(function(){
+		"use strict";
+
+		Login.init(); // Init login JavaScript
+	});
+	</script>
+</head>
+
+<body class="login">
+	<!-- Logo -->
+	<div class="logo">
+		<img src="/public/assets/img/logo-invoice.png" width="280px" alt="logo" />
+	</div>
+	<!-- /Logo -->
+
+	<!-- Login Box -->
+	<div class="box">
+		<div class="content">
+			<!-- Login Formular -->
+			<form action="/login/verification" method="post" class="form-vertical login-form">
+				<h3 class="form-title">Sign In to your Account</h3>
+
+				<!-- Error Message -->
+        <div class="alert fade in alert-danger" style="display: none;">
+					<i class="icon-remove close" data-dismiss="alert"></i>
+					Enter any username and password.
+				</div>
+        <% if (message_login) { %>
+          <div id="flash_login">
+            <div class="alert fade in alert-danger">
+              <i class="icon-remove close" data-dismiss="alert"></i>
+              <%= message_login %>
+            </div>
+          </div>
+
+          <script>
+            $(function() {
+              $('#flash_login').delay(3000).fadeOut(1000);
+            });
+          </script>
+        <% } %>
+
+				<div class="form-group">
+					<div class="input-icon">
+						<i class="icon-user"></i>
+						<input type="text" name="username" value="" class="form-control" placeholder="Username" autofocus="autofocus" data-rule-required="true" data-msg-required="Please enter your username." required />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="input-icon">
+						<i class="icon-lock"></i>
+						<input type="password" name="password" value="" class="form-control" placeholder="Password" data-rule-required="true" data-msg-required="Please enter your password." required />
+					</div>
+				</div>
+
+				<div class="form-actions">
+					<!-- <label class="checkbox pull-left"><input type="checkbox" class="uniform" name="remember"> Remember me</label> -->
+					<button type="submit" class="submit btn btn-primary pull-right">
+						Sign In <i class="icon-angle-right"></i>
+					</button>
+				</div>
+			</form>
+			<!-- /Login Formular -->
+
+			<!-- Register Formular (hidden by default) -->
+			<form action="#" method="post" class="form-vertical register-form" style="display: none;">
+				<h3 class="form-title">Sign Up for Free</h3>
+				<div class="form-group">
+					<div class="input-icon">
+						<i class="icon-user"></i>
+						<input type="text" name="username" class="form-control" placeholder="Username" autofocus="autofocus" data-rule-required="true" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="input-icon">
+						<i class="icon-lock"></i>
+						<input type="password" name="password" class="form-control" placeholder="Password" id="register_password" data-rule-required="true" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="input-icon">
+						<i class="icon-ok"></i>
+						<input type="password" name="password_confirm" class="form-control" placeholder="Confirm Password" data-rule-required="true" data-rule-equalTo="#register_password" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="input-icon">
+						<i class="icon-envelope"></i>
+						<input type="text" name="Email" class="form-control" placeholder="Email address" data-rule-required="true" data-rule-email="true" />
+					</div>
+				</div>
+				<div class="form-group spacing-top">
+					<label class="checkbox"><input type="checkbox" class="uniform" name="remember" data-rule-required="true" data-msg-required="Please accept ToS first."> I agree to the <a href="javascript:void(0);">Terms of Service</a></label>
+					<label for="remember" class="has-error help-block" generated="true" style="display:none;"></label>
+				</div>
+
+				<div class="form-actions">
+					<button type="button" class="back btn btn-default pull-left">
+						<i class="icon-angle-left"></i> Back</i>
+					</button>
+					<button type="submit" class="submit btn btn-primary pull-right">
+						Sign Up <i class="icon-angle-right"></i>
+					</button>
+				</div>
+			</form>
+			<!-- /Register Formular -->
+		</div> <!-- /.content -->
+
+		<!-- Forgot Password Form -->
+		<div class="inner-box">
+			<div class="content">
+				<i class="icon-remove close hide-default"></i>
+				<a href="#" class="forgot-password-link">Forgot Password?</a>
+
+				<% if (message_reset) { %>
+          <div id="flash_reset">
+            <div class="alert fade in alert-danger">
+	              <%= message_reset %>
+            </div>
+          </div>
+
+          <script>
+            $(function() {
+              $('#flash_reset').delay(5000).fadeOut(1000);
+            });
+          </script>
+        <% } %>
+
+				<!-- Forgot Password Formular -->
+				<form action="/reset" method="post" class="form-vertical forgot-password-form hide-default">
+					<div class="form-group">
+						<div class="input-icon">
+							<i class="icon-envelope"></i>
+							<input type="email" name="email" class="form-control" placeholder="Enter email address" data-rule-required="true" data-rule-email="true" data-msg-required="Please enter your email." />
+						</div>
+					</div>
+
+					<button type="submit" class="submit btn btn-default btn-block">
+						Reset your Password
+					</button>
+				</form>
+				<!-- /Forgot Password Formular -->
+
+				<% if (success_reset) { %>
+				<div id="flash_reset_done">
+					<div class="forgot-password-done">
+						<i class="icon-ok success-icon"></i>
+						<span><%= success_reset %></span>
+					</div>
+				</div>
+
+				<script>
+					$(function() {
+						$('#flash_reset_done').delay(10000).fadeOut(1000);
+					});
+				</script>
+				<% } %>
+			</div> <!-- /.content -->
+		</div>
+		<!-- /Forgot Password Form -->
+	</div>
+	<!-- /Login Box -->
+
+	<!-- Footer -->
+	<div class="footer">
+		<span class="small">&copy; 2017 <strong>Trippediacity</strong></span>
+	</div>
+	<!-- /Footer -->
+</body>
+</html>

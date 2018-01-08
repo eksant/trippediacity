@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<%- include partials/metahead %>
+</head>
+
+<body class="breakpoint-1200 <%= setting.theme %>">
+  <%- include partials/header %>
+	<%- include partials/alert %>
+
+	<div id="container">
+		<%- include partials/sidebar %>
+
+		<div id="content">
+			<div class="container">
+				<%- include partials/breadcrumb %>
+
+				<!-- Page Header -->
+        <div class="page-header"></div>
+
+        <!-- Page Content -->
+        <div class="row">
+          <div class="col-md-12">
+						<div class="widget box">
+							<div class="widget-header">
+								<h4><%= title %></h4>
+							</div>
+              <div class="widget-content no-padding">
+                <table class="table table-striped table-bordered table-hover table-exports datatable" data-horizontal-width="150%">
+									<thead>
+										<tr>
+											<th rowspan="2" class="text-left">No<br><p class="text-info">&nbsp;</p></th>
+											<th rowspan="2" class="text-left">Create Date<br><p class="text-info">&nbsp;</p></th>
+											<th rowspan="2" class="text-left">No Invoice Sale<br><p class="text-info">&nbsp;</p></th>
+											<th rowspan="2" class="text-left">Sales Revenue (IDR)<br><p class="text-info">[a]</p></th>
+											<th rowspan="2" class="text-left">Payment Purchase (IDR)<br><p class="text-info">[b]</p></th>
+											<th rowspan="2" class="text-left">Gross Profit Global (IDR)<br><p class="text-info">[c = a - b]</p></th>
+											<th colspan="2">Expenses Global</th>
+											<th colspan="3">Net Profit Global</th>
+											<th colspan="4">Profit Investor</th>
+										</tr>
+										<tr>
+											<!-- <th>Create Date</th>
+											<th>No Invoice Sale</th>
+											<th>Sales Revenue (IDR)</th>
+											<th>Payment Purchase (IDR)</th> -->
+											<th>Admin Fee (IDR)<br><p class="text-info">[d = c x <%= setting.admin_fee %>%]</p></th>
+											<th>Operating Cost (IDR)<br><p class="text-info">[e = c x <%= setting.operating_costs %>%]</p></th>
+
+											<th>Net Profit Global (IDR)<br><p class="text-info">[f = c - (d + e)]</p></th>
+											<th>Total Slot Investors<br><p class="text-info">[g]</p></th>
+											<th>Profit/Slot (IDR)<br><p class="text-info">[h = f / g]</p></th>
+
+											<th><% if (userSession.role == 1) { %> Investor Name <% } else { %> Your Name <% } %><br><p class="text-info">&nbsp;</p></th>
+											<th><% if (userSession.role == 1) { %> Slot Investor <% } else { %> Your Slot <% } %><br><p class="text-info">[i]</p></th>
+											<th>Status<br><p class="text-info">&nbsp;</p></th>
+											<th><% if (userSession.role == 1) { %> Profit Investor (IDR) <% } else { %> Your Profit (IDR) <% } %><br><p class="text-info">[j = h x i]</p></th>
+										</tr>
+									</thead>
+
+									<tbody>
+                    <%
+											moment.updateLocale('id', null)
+											var getStatusLabel
+											var getStatusText
+											var getTotalProfitInvestor = 0
+                      for (let i = 0; i < profit.length; i++) {
+												if (profit[i].status == 1) {
+											  	getStatusText		= 'Pending'
+											    getStatusLabel	= 'default'
+											  } else if (profit[i].status == 2) {
+											  	getStatusText		= 'Payment Done'
+											    getStatusLabel	= 'warning'
+											  } else if (profit[i].status == 3) {
+											 		getStatusText		= 'Completed'
+											    getStatusLabel	= 'success'
+											  } else if (profit[i].status == 4) {
+											  	getStatusText		= 'Closing'
+											    getStatusLabel	= 'primary'
+											  }
+
+												if (profit[i].user_profit != '') {
+													getTotalProfitInvestor += Number(profit[i].user_profit)
+												}
+                    %>
+                    <tr>
+											<td><%= i + 1 %>.&nbsp;&nbsp;</td>
+											<td><%= moment(profit[i].createdAt).format('D-M-YYYY') %></td>
+											<td><%= profit[i].no_sale %></td>
+											<td align="right"><%= formatMoney(profit[i].payment_sale) %></td>
+											<td align="right"><%= formatMoney(profit[i].payment_purchase) %></td>
+											<td align="right"><%= formatMoney(profit[i].total_profit) %></td>
+
+											<td align="right"><%= formatMoney(profit[i].admin_fee) %></td>
+											<td align="right"><%= formatMoney(profit[i].operating_costs) %></td>
+
+											<td align="right"><%= formatMoney(profit[i].total_netprofit) %></td>
+											<td align="center"><%= profit[i].total_slot %></td>
+											<td align="right"><%= formatMoney(profit[i].profit_slot) %></td>
+
+											<td><%= profit[i].User.name %></td>
+											<td align="center"><%= profit[i].user_slot %></td>
+											<td><span class="label label-<%= getStatusLabel %>"><%= getStatusText %></span></td>
+											<td align="right"><%= formatMoney(profit[i].user_profit) %></td>
+										</tr>
+                    <% } %>
+									</tbody>
+
+									<tfoot>
+										<tr class="text-right">
+											<td colspan="14"><b><% if (userSession.role == 1) { %> Total Profit Investor (IDR) <% } else { %> Your Total Profit (IDR) <% } %></b></td>
+											<td><b><%= formatMoney(getTotalProfitInvestor) %></b></td>
+										</tr>
+									</tfoot>
+
+                </table>
+              </div>
+
+							<div class="col-md-12 text-info">
+								<h5>Information :</h5>
+								<ul>
+									<li>Total Slot Investors [g] included with your slot when registered.</li>
+								</ul>
+							</div>
+
+
+            </div>
+          </div>
+        </div>
+
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

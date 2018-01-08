@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+	<title>Trippediacity - <%= title %></title>
+  <link href="/public/assets/img/favicon.ico" rel="shortcut icon" type="image/x-icon">
+
+	<!-- Bootstrap -->
+	<link href="/public/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
+	<!-- Theme -->
+	<link href="/public/assets/css/main.css" rel="stylesheet" type="text/css" />
+	<link href="/public/assets/css/plugins.css" rel="stylesheet" type="text/css" />
+	<link href="/public/assets/css/responsive.css" rel="stylesheet" type="text/css" />
+	<link href="/public/assets/css/icons.css" rel="stylesheet" type="text/css" />
+
+	<!-- Login -->
+	<link href="/public/assets/css/login.css" rel="stylesheet" type="text/css" />
+
+	<link href="/public/assets/css/fontawesome/font-awesome.min.css" rel="stylesheet">
+	<!--[if IE 7]>
+		<link rel="stylesheet" href="assets/css/fontawesome/font-awesome-ie7.min.css">
+	<![endif]-->
+
+	<!--[if IE 8]>
+		<link href="assets/css/ie8.css" rel="stylesheet" type="text/css" />
+	<![endif]-->
+	<!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'> -->
+
+	<!--=== JavaScript ===-->
+	<script src="/public/assets/js/libs/jquery-1.10.2.min.js" type="text/javascript"></script>
+	<script src="/public/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="/public/assets/js/libs/lodash.compat.min.js" type="text/javascript"></script>
+
+	<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+		<script src="assets/js/libs/html5shiv.js"></script>
+	<![endif]-->
+
+	<!-- Beautiful Checkboxes -->
+	<script src="/public/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+
+	<!-- Form Validation -->
+	<script src="/public/plugins/validation/jquery.validate.min.js" type="text/javascript"></script>
+</head>
+
+<body class="login">
+	<!-- Logo -->
+	<div class="logo">
+		<img src="/public/assets/img/logo-invoice.png" width="280px" alt="logo" />
+
+	</div>
+	<!-- /Logo -->
+
+	<!-- Login Box -->
+	<div class="box">
+		<div class="content">
+			<% if (type != 'success') { %>
+			<h3 class="form-title">Enter your new password</h3>
+			<% } %>
+
+			<!-- Error Message -->
+      <% if (message) { %>
+        <div id="flash_message">
+          <div class="alert fade in alert-<%= type %>">
+            <i class="icon-remove close" data-dismiss="alert"></i>
+            <%= message %>
+          </div>
+        </div>
+
+        <script>
+          $(function() {
+            $('#flash_message').delay(3000).fadeOut(1000);
+          });
+        </script>
+      <% } %>
+
+			<% if (type != 'success') { %>
+				<form method="post" class="form-vertical login-form">
+					<div class="form-group">
+						<div class="input-icon">
+							<i class="icon-user"></i>
+							<input type="password" name="new_password" class="form-control" placeholder="New Password" data-rule-required="true" data-msg-required="Please enter your new password." required/>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="input-icon">
+							<i class="icon-user"></i>
+							<input type="password" name="confirm_password" class="form-control" placeholder="Password Confirmation" data-rule-required="true" data-msg-required="Please enter your password confirmation." required/>
+						</div>
+					</div>
+
+					<div class="form-actions">
+						<!-- <label class="checkbox pull-left"><input type="checkbox" class="uniform" name="remember"> Remember me</label> -->
+						<button type="submit" class="submit btn btn-primary pull-right">Update New Password <i class="icon-angle-right"></i></button>
+					</div>
+				</form>
+			<% } else { %>
+				<div class="widget-content align-center">
+					<p><a href="/login" class="btn btn-success btn-block"><i class="icon-angle-left"></i> Back To Login</a></p>
+				</div>
+			<% } %>
+
+		</div> <!-- /.content -->
+	</div>
+	<!-- /Login Box -->
+
+	<!-- Footer -->
+	<div class="footer">
+		<span class="small">&copy; 2017 <strong>Trippediacity</strong></span>
+	</div>
+	<!-- /Footer -->
+</body>
+</html>

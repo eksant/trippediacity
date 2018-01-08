@@ -1,0 +1,73 @@
+<div id="sidebar" class="sidebar-fixed">
+  <div id="sidebar-content">
+
+    <!--=== Navigation ===-->
+    <ul id="nav">
+      <li <% if (title == 'Dashboard') { %> class="current" <% } %>>
+        <a href="/"><i class="icon-dashboard"></i> Dashboard</a>
+      </li>
+
+      <% if (userSession.role == 1 || userSession.role == 3) { %>
+      <li <% if (title == 'User' || title == 'Customer' || title == 'Agent') { %> class="current open" <% } %>>
+				<a href="javascript:void(0);"><i class="icon-user"></i> User Management</a>
+				<ul class="sub-menu">
+          <% if (userSession.role == 1) { %>
+					<li <% if (title == 'User') { %> class="current" <% } %>>
+						<a href="/user"><i class="icon-angle-right"></i> User</a>
+					</li>
+          <% } %>
+					<li <% if (title == 'Customer') { %> class="current" <% } %>>
+						<a href="/customer"><i class="icon-angle-right"></i> Customer</a>
+					</li>
+          <li <% if (title == 'Agent') { %> class="current" <% } %>>
+						<a href="/agent"><i class="icon-angle-right"></i> Agent</a>
+					</li>
+				</ul>
+			</li>
+
+      <li <% if (title == 'Purchase' || title == 'Sale' || title == 'Payment') { %> class="current open" <% } %>>
+				<a href="javascript:void(0);"><i class="icon-money"></i> Transaction</a>
+				<ul class="sub-menu">
+					<li<% if (title == 'Purchase') { %> class="current" <% } %>>
+						<a href="/purchase"><i class="icon-angle-right"></i> Purchase</a>
+					</li>
+					<li <% if (title == 'Sale') { %> class="current" <% } %>>
+						<a href="/sale"><i class="icon-angle-right"></i> Sale</a>
+					</li>
+				</ul>
+			</li>
+      <% } %>
+
+      <li <% if (title == 'Transaction Report' || title == 'Purchase Report' || title == 'Sale Report' || title == 'Cashflow Report' || title == 'Profit Report') { %> class="current open" <% } %>>
+				<a href="javascript:void(0);"><i class="icon-list-alt"></i> Report</a>
+				<ul class="sub-menu">
+          <% if (userSession.role == 1 || userSession.role == 4) { %>
+          <li <% if (title == 'Transaction Report') { %> class="current" <% } %>>
+						<a href="/report/transaction"><i class="icon-angle-right"></i> Transaction Report</a>
+					</li>
+          <% } %>
+          <% if (userSession.role == 1 || userSession.role == 3) { %>
+					<li <% if (title == 'Purchase Report') { %> class="current" <% } %>>
+						<a href="/report/purchase"><i class="icon-angle-right"></i> Purchase Report</a>
+					</li>
+					<li <% if (title == 'Sale Report') { %> class="current" <% } %>>
+						<a href="/report/sale"><i class="icon-angle-right"></i> Sale Report</a>
+					</li>
+          <li <% if (title == 'Cashflow Report') { %> class="current" <% } %>>
+						<a href="/report/cashflow"><i class="icon-angle-right"></i> Cashflow Report</a>
+					</li>
+          <% } %>
+          <% if (userSession.role == 1 || userSession.role == 2) { %>
+          <li <% if (title == 'Profit Report') { %> class="current" <% } %>>
+						<a href="/report/profit"><i class="icon-angle-right"></i> Profit Report</a>
+					</li>
+          <% } %>
+				</ul>
+			</li>
+    </ul>
+    <!-- /Navigation -->
+
+  </div>
+  <div id="divider" class="resizeable"></div>
+</div>
+<!-- /Sidebar -->
