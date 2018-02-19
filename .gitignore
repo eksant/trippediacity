@@ -1,1 +1,4 @@
+documents
 node_modules
+seeders
+.env

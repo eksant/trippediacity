@@ -1,3 +1,4 @@
+require('dotenv').config()
 const ejs           = require('ejs')
 const express       = require('express')
 const favicon       = require('express-favicon')
