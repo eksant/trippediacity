@@ -19,7 +19,7 @@ app.use(bodyParser.json())
 // app.use('/public', express.static(process.cwd() + '/public'))
 app.use('/public', express.static(__dirname + '/public'))
 app.use(favicon(__dirname + '/public/assets/img/favicon.ico'))
-app.use(session({ secret: 'trip-pedia-city', cookie: { maxAge: 3600000 } })) //3600000
+app.use(session({ secret: process.env.SESSION_KEY, cookie: { maxAge: 3600000 } })) //3600000
 
 app.use('/login', require('./routes/login'))
 app.use('/logout', require('./routes/logout'))
