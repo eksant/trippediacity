@@ -3,7 +3,7 @@ const nodemailer  = require('nodemailer')
 const Nexmo       = require('nexmo')
 
 exports.email = function(obj, callback) {
-  Model.Setting.findById(1)
+  Model.Setting.findByPk(1)
   .then(function(setting) {
     if (setting.mail_host != '' && setting.mail_username != '') {
       let secure = true
@@ -35,7 +35,7 @@ exports.email = function(obj, callback) {
 }
 
 exports.sms = function(obj, callback) {
-  Model.Setting.findById(1)
+  Model.Setting.findByPk(1)
   .then(function(setting) {
     if (setting.sms_apikey != '' && setting.sms_apisecret != '') {
       const nexmo = new Nexmo({

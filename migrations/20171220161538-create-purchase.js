@@ -6,124 +6,124 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       UserId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       AgentId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       no_invoice: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       category: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       booking_id: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       hotel_name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       hotel_address: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
       },
       hotel_phone: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       hotel_note: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
       },
       hotel_startdate: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       hotel_enddate: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       flightdeparture_airlinebook: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       flightdeparture_airlinename: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       flightdeparture_startdate: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       flightdeparture_enddate: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       flightdeparture_airportfrom: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       flightdeparture_airportto: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       flightdeparture_terminal: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       flightdeparture_note: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
       },
       flightreturn_airlinebook: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       flightreturn_airlinename: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       flightreturn_startdate: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       flightreturn_enddate: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       flightreturn_airportfrom: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       flightreturn_airportto: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       flightreturn_terminal: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       flightreturn_note: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
       },
       total_day: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       purchase: {
-        type: Sequelize.FLOAT
+        type: Sequelize.FLOAT,
       },
       total_purchase: {
-        type: Sequelize.FLOAT
+        type: Sequelize.FLOAT,
       },
       payment_method: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       payment_date: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       total_payment: {
-        type: Sequelize.FLOAT
+        type: Sequelize.FLOAT,
       },
       status: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       remark: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
     });
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('Purchases');
-  }
+  },
 };

@@ -6,52 +6,55 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       PurchaseId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       AgentId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       UserId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       CustomerId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       no_invoice: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       total_sale: {
-        type: Sequelize.FLOAT
+        type: Sequelize.FLOAT,
       },
       payment_method: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       payment_date: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       total_payment: {
-        type: Sequelize.FLOAT
+        type: Sequelize.FLOAT,
       },
       status: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+      },
+      price: {
+        type: Sequelize.FLOAT,
       },
       remark: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
     });
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('Sales');
-  }
+  },
 };

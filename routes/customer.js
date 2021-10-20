@@ -116,7 +116,7 @@ Router.post('/edit/:id', (req, res) => {
   })
   .then(function(user) {
     if (user.length == 0) {
-      Model.Customer.findById(req.params.id)
+      Model.Customer.findByPk(req.params.id)
       .then(function(customer) {
         let hooks = true
         let objCustomer = {

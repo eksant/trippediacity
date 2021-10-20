@@ -181,7 +181,7 @@ Router.post('/add', (req, res) => {
 })
 
 Router.get('/edit/:id', (req, res) => {
-  Model.User.findById(req.params.id)
+  Model.User.findByPk(req.params.id)
   .then(function(user) {
     Model.Setting.findAll()
     .then(function(setting) {
@@ -210,7 +210,7 @@ Router.post('/edit/:id', (req, res) => {
   })
   .then(function(customer) {
     if (customer.length == 0) {
-      Model.User.findById(req.params.id)
+      Model.User.findByPk(req.params.id)
       .then(function(user) {
         let hooks = true
         let objUser = {

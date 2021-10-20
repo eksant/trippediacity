@@ -1,23 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<%- include partials/metahead %>
-</head>
+  <head>
+    <%- include('./partials/metahead'); %>
+  </head>
 
-<body class="breakpoint-1200 <%= setting.theme %>">
-  <%- include partials/header %>
+  <body class="breakpoint-1200 <%= setting.theme %>">
+    <%- include('./partials/header'); %>
 
-	<div id="container">
-		<%- include partials/sidebar %>
+    <div id="container">
+      <%- include('./partials/sidebar'); %>
 
-		<div id="content">
-			<div class="container">
-				<%- include partials/breadcrumb %>
-				<%- include dashboard %>
-			</div>
-
-		</div>
-	</div>
-
-</body>
+      <div id="content">
+        <div class="container">
+          <%- include('./partials/breadcrumb'); %> <%- include('./dashboard'); %>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

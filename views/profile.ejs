@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<%- include partials/metahead %>
+	<%- include('./partials/metahead'); %>
 </head>
 
 <body class="breakpoint-1200 <%= setting.theme %>">
-  <%- include partials/header %>
-	<%- include partials/alert %>
+  <%- include('./partials/header'); %>
+	<%- include('./partials/alert'); %>
 
 	<div id="container">
-		<%- include partials/sidebar %>
+		<%- include('./partials/sidebar'); %>
 
 		<div id="content">
 			<div class="container">
-				<%- include partials/breadcrumb %>
+				<%- include('./partials/breadcrumb'); %>
 
         <%
 					var photo = 'blank_user.png'

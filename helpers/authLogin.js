@@ -1,9 +1,9 @@
 function checkSession(req, res, next) {
-  let login = req.session.isLogin
+  let login = req.session.isLogin;
   if (login) {
-    next(res.path)
+    next(res.path);
   } else {
-    res.redirect('/login')
+    res.redirect('/login');
   }
 }
 

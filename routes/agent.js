@@ -67,7 +67,7 @@ Router.post('/add', (req, res) => {
 })
 
 Router.get('/edit/:id', (req, res) => {
-  Model.Agent.findById(req.params.id)
+  Model.Agent.findByPk(req.params.id)
   .then(function(agent) {
     Model.Setting.findAll()
     .then(function(setting) {

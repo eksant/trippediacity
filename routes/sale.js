@@ -671,7 +671,7 @@ Router.post('/payment/:id', (req, res) => {
 })
 
 Router.get('/delete/:id', (req, res) => {
-  Model.Sale.findById(req.params.id)
+  Model.Sale.findByPk(req.params.id)
   .then(function(sale) {
     if (res.locals.userSession.role == 1 || sale.status < 3) {
       Model.Purchase.findOne({
